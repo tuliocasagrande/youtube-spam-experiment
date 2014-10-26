@@ -10,7 +10,7 @@ The comments were extracted from 5 YouTube videos in October 2014, totaling 1,00
 A total of 200 comments from each video were labeled by hand -- (1) spam or (0) ham -- resulting in the following description:
 
 \#| Video         | Spam | Ham
---| --------      | ---- | ---
+---| --------      | ---- | ---
 1 | PlayStation4  | 20   | 180
 2 | Avengers      | 40   | 160
 3 | PSY           | 60   | 140
