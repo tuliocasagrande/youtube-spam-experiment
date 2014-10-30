@@ -2,11 +2,12 @@
 \footnotesize
 \centering
 \caption{Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelPropagation as the semi-supervised algorithm.}
-\label{tab:label-propagation}
-\begin{tabular}{r|c|c|c|c|c} \hline\hline
+\label{tab:label-propagation-PewDiePie_gRyPjRrjS34}
+\begin{tabular}{r|c|c|c|c|c}
+\hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
-LabelPropagation & 69.06 $\pm$ 0.07 & 23.69 $\pm$ 0.17 & 0.85 $\pm$ 0.03 & 37.287 $\pm$ 0.235 & 36.887 $\pm$ 0.185 \\
-LinearSVC & 81.09 $\pm$ 0.13 & 55.05 $\pm$ 0.28 & 1.47 $\pm$ 0.06 & 69.007 $\pm$ 0.248 & 62.317 $\pm$ 0.263 \\
+LabelPropagation & 83.59 $\pm$ 0.14 & 81.85 $\pm$ 0.25 & 16.28 $\pm$ 0.32 & 0.824 $\pm$ 0.208 & 0.668 $\pm$ 0.262 \\
+LinearSVC & 89.20 $\pm$ 0.11 & 84.21 $\pm$ 0.19 & 6.07 $\pm$ 0.13 & 0.882 $\pm$ 0.114 & 0.788 $\pm$ 0.169 \\
 \hline\hline
 \end{tabular}
 \end{table}
@@ -14,11 +15,12 @@ LinearSVC & 81.09 $\pm$ 0.13 & 55.05 $\pm$ 0.28 & 1.47 $\pm$ 0.06 & 69.007 $\pm$
 \footnotesize
 \centering
 \caption{Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelSpreading as the semi-supervised algorithm (more robust to noise).}
-\label{tab:label-spreading}
-\begin{tabular}{r|c|c|c|c|c} \hline\hline
+\label{tab:label-spreading-PewDiePie_gRyPjRrjS34}
+\begin{tabular}{r|c|c|c|c|c}
+\hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
-LabelSpreading & 75.76 $\pm$ 0.09 & 43.90 $\pm$ 0.18 & 3.02 $\pm$ 0.06 & 58.694 $\pm$ 0.189 & 50.469 $\pm$ 0.216 \\
-LinearSVC & 82.94 $\pm$ 0.13 & 60.63 $\pm$ 0.29 & 2.17 $\pm$ 0.07 & 73.093 $\pm$ 0.235 & 65.638 $\pm$ 0.275 \\
+LabelSpreading & 83.93 $\pm$ 0.14 & 80.77 $\pm$ 0.24 & 14.53 $\pm$ 0.28 & 0.827 $\pm$ 0.201 & 0.673 $\pm$ 0.280 \\
+LinearSVC & 90.22 $\pm$ 0.09 & 85.19 $\pm$ 0.15 & 4.83 $\pm$ 0.10 & 0.890 $\pm$ 0.114 & 0.805 $\pm$ 0.169 \\
 \hline\hline
 \end{tabular}
 \end{table}
@@ -26,10 +28,11 @@ LinearSVC & 82.94 $\pm$ 0.13 & 60.63 $\pm$ 0.29 & 2.17 $\pm$ 0.07 & 73.093 $\pm$
 \footnotesize
 \centering
 \caption{Evaluating supervised training with 100 training samples and 100 testing samples when using LinearSVM as the supervised algorithm.}
-\label{tab:linear-svm}
-\begin{tabular}{r|c|c|c|c|c} \hline\hline
+\label{tab:linear-svm-PewDiePie_gRyPjRrjS34}
+\begin{tabular}{r|c|c|c|c|c}
+\hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
-LinearSVC & 87.96 $\pm$ 0.07 & 75.70 $\pm$ 0.16 & 3.93 $\pm$ 0.08 & 83.203 $\pm$ 0.107 & 75.265 $\pm$ 0.149 \\
+LinearSVC & 91.33 $\pm$ 0.09 & 86.29 $\pm$ 0.15 & 3.82 $\pm$ 0.08 & 0.900 $\pm$ 0.123 & 0.825 $\pm$ 0.177 \\
 \hline\hline
 \end{tabular}
 \end{table}
