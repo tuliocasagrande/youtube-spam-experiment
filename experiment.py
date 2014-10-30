@@ -12,7 +12,7 @@ import numpy as np
 class Classifier:
   """Store the classifier and its achieved results"""
 
-  def __init__(self, algorithm, param_grid, cv=3):
+  def __init__(self, algorithm, param_grid, cv=5):
     self.tp = []
     self.tn = []
     self.fp = []
@@ -37,26 +37,28 @@ class Classifier:
 
     return predicted_y
 
-  def summarize(self):
+  def report(self):
 
     tp = np.array(self.tp, dtype='float64'); tn = np.array(self.tn, dtype='float64')
     fp = np.array(self.fp, dtype='float64'); fn = np.array(self.fn, dtype='float64')
 
     self.acc = (tp + tn) / (tp + tn + fp + fn)
-    self.precision = tp / (tp + fp)
-    self.recall = tp / (tp + fn)
-    self.f1 = 2 * (self.precision * self.recall) / (self.precision + self.recall)
+    self.sc = tp / (tp + fn)
+    self.bh = fp / (fp + tn)
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    self.f1 = 2 * (precision * recall) / (precision + recall)
     self.mcc = ((tp * tn) - (fp * fn)) / np.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
-
-    print '\nClassifier {0}'.format(type(self.clf).__name__)
 
     # Printing scores
     # x +/- 2sigma (approximately a 95% confidence interval)
-    print 'Accuracy: {0:.2f} % +/- {1:.2f}'.format(np.nanmean(self.acc) * 100, np.nanstd(self.acc) * 2)
-    print 'Precision: {0:.2f} % +/- {1:.2f}'.format(np.nanmean(self.precision) * 100, np.nanstd(self.precision) * 2)
-    print 'Recall: {0:.2f} % +/- {1:.2f}'.format(np.nanmean(self.recall) * 100, np.nanstd(self.recall) * 2)
-    print 'F-score: {0:.3f} % +/- {1:.3f}'.format(np.nanmean(self.f1) * 100, np.nanstd(self.f1) * 2)
-    print 'MCC: {0:.3f} % +/- {1:.3f}'.format(np.nanmean(self.mcc) * 100, np.nanstd(self.mcc) * 2)
+    sys.stdout.write('{0} & '.format(type(self.clf).__name__))
+    sys.stdout.write('{0:.2f} $\pm$ {1:.2f} & '.format(np.nanmean(self.acc) * 100, np.nanstd(self.acc) * 2))
+    sys.stdout.write('{0:.2f} $\pm$ {1:.2f} & '.format(np.nanmean(self.sc) * 100, np.nanstd(self.sc) * 2))
+    sys.stdout.write('{0:.2f} $\pm$ {1:.2f} & '.format(np.nanmean(self.bh) * 100, np.nanstd(self.bh) * 2))
+    sys.stdout.write('{0:.3f} $\pm$ {1:.3f} & '.format(np.nanmean(self.f1) * 100, np.nanstd(self.f1) * 2))
+    sys.stdout.write('{0:.3f} $\pm$ {1:.3f} \\\\\n'.format(np.nanmean(self.mcc) * 100, np.nanstd(self.mcc) * 2))
+
 
 def classify(filename):
 
@@ -80,16 +82,38 @@ def classify(filename):
   permut = np.random.permutation(200)
 
   # Semi-supervised training, 100/50/50
-  print '\nEvaluating semi-supervised training (100/50/50) - LabelPropagation'
+  caption = 'Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelPropagation as the semi-supervised algorithm.'
+  label = 'tab:label-propagation'
+  print_table_header(caption, label)
   semi_supervised_training(LabelPropagation, contents, classes, permut)
+  print_table_footer()
 
-  print '\nEvaluating semi-supervised training (100/50/50) - LabelSpreading (more robust to noise)'
+  caption = 'Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelSpreading as the semi-supervised algorithm (more robust to noise).'
+  label = 'tab:label-spreading'
+  print_table_header(caption, label)
   semi_supervised_training(LabelSpreading, contents, classes, permut)
+  print_table_footer()
 
   # Linear SVM, 100/100
-  print '\nEvaluating supervised training (100/100) - LinearSVM'
+  caption = 'Evaluating supervised training with 100 training samples and 100 testing samples when using LinearSVM as the supervised algorithm.'
+  label = 'tab:linear-svm'
+  print_table_header(caption, label)
   supervised_training(contents, classes, permut)
+  print_table_footer()
 
+def print_table_header(caption, label):
+  print '\\begin{table}[!htb]'
+  print '\\footnotesize'
+  print '\\centering'
+  print '\\caption{{{0}}}'.format(caption)
+  print '\\label{{{0}}}'.format(label)
+  print '\\begin{tabular}{r|c|c|c|c|c} \\hline\\hline'
+  print 'Classifier & Acc (\\%) & SC (\\%) & BH (\\%) & F-medida & MCC \\\\ \\hline'
+
+def print_table_footer():
+  print '\\hline\\hline'
+  print '\\end{tabular}'
+  print '\\end{table}'
 
 # Evaluating semi-supervised training with an adaptated leave-one-out:
 # 1- train with 100 labeled + 50 unlabeled comments;
@@ -139,8 +163,8 @@ def semi_supervised_training(semi_superv_algorithm, contents, classes, permut):
     # Rotating dataset
     permut = np.delete(np.append(permut, permut[0]), 0)
 
-  semi_supervised_clf.summarize()
-  svm_clf.summarize()
+  semi_supervised_clf.report()
+  svm_clf.report()
 
 # Evaluating supervised training with an adaptated leave-one-out:
 # 1- train with 100 labeled comments;
@@ -171,7 +195,7 @@ def supervised_training(contents, classes, permut):
     # Rotating dataset
     permut = np.delete(np.append(permut, permut[0]), 0)
 
-  svm_clf.summarize()
+  svm_clf.report()
 
 if __name__ == "__main__":
   if len(sys.argv) != 2:

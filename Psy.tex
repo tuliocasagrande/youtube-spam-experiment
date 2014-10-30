@@ -1,0 +1,35 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelPropagation as the semi-supervised algorithm.}
+\label{tab:label-propagation}
+\begin{tabular}{r|c|c|c|c|c} \hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
+LabelPropagation & 77.23 $\pm$ 0.14 & 24.27 $\pm$ 0.24 & 0.22 $\pm$ 0.01 & 38.526 $\pm$ 0.294 & 41.112 $\pm$ 0.255 \\
+LinearSVC & 84.15 $\pm$ 0.15 & 49.62 $\pm$ 0.31 & 0.42 $\pm$ 0.02 & 64.422 $\pm$ 0.283 & 62.044 $\pm$ 0.264 \\
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Evaluating semi-supervised training with 100 training samples, 50 semi-supervised samples and 50 testing samples when using LabelSpreading as the semi-supervised algorithm (more robust to noise).}
+\label{tab:label-spreading}
+\begin{tabular}{r|c|c|c|c|c} \hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
+LabelSpreading & 81.07 $\pm$ 0.18 & 39.07 $\pm$ 0.38 & 0.28 $\pm$ 0.02 & 53.843 $\pm$ 0.377 & 54.008 $\pm$ 0.310 \\
+LinearSVC & 85.60 $\pm$ 0.18 & 56.30 $\pm$ 0.43 & 0.57 $\pm$ 0.03 & 69.073 $\pm$ 0.368 & 66.466 $\pm$ 0.364 \\
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Evaluating supervised training with 100 training samples and 100 testing samples when using LinearSVM as the supervised algorithm.}
+\label{tab:linear-svm}
+\begin{tabular}{r|c|c|c|c|c} \hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC \\ \hline
+LinearSVC & 90.97 $\pm$ 0.08 & 71.19 $\pm$ 0.21 & 0.64 $\pm$ 0.02 & 81.976 $\pm$ 0.147 & 78.076 $\pm$ 0.165 \\
+\hline\hline
+\end{tabular}
+\end{table}
