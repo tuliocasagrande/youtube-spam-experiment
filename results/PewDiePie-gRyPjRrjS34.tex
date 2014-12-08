@@ -1,0 +1,135 @@
+\begin{table}[!htb]
+\centering
+\caption{Avaliando MultinomialNB com 160 amostras de treino e 40 amostras de teste para o vídeo PewDiePie.}
+\label{tab:multinomial-nb-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+MultinomialNB-050 & 90.00 & 80.00 & 6.67 & 0.800 & 0.733 & 0.733 & 8 & 28 & 2 & 2 \\ 
+MultinomialNB-075 & 92.50 & 100.00 & 12.00 & 0.909 & 0.856 & 0.846 & 15 & 22 & 3 & 0 \\ 
+MultinomialNB-100 & 90.00 & 100.00 & 20.00 & 0.909 & 0.816 & 0.800 & 20 & 16 & 4 & 0 \\ 
+MultinomialNB-125 & 82.50 & 100.00 & 46.67 & 0.877 & 0.645 & 0.588 & 25 & 8 & 7 & 0 \\ 
+MultinomialNB-150 & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Avaliando BernoulliNB com 160 amostras de treino e 40 amostras de teste para o vídeo PewDiePie.}
+\label{tab:bernoulli-nb-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+BernoulliNB-050 & 80.00 & 20.00 & 0.00 & 0.333 & 0.397 & 0.273 & 2 & 30 & 0 & 8 \\ 
+BernoulliNB-075 & 72.50 & 33.33 & 4.00 & 0.476 & 0.398 & 0.333 & 5 & 24 & 1 & 10 \\ 
+BernoulliNB-100 & 70.00 & 50.00 & 10.00 & 0.625 & 0.436 & 0.400 & 10 & 18 & 2 & 10 \\ 
+BernoulliNB-125 & 90.00 & 100.00 & 26.67 & 0.926 & 0.795 & 0.775 & 25 & 11 & 4 & 0 \\ 
+BernoulliNB-150 & 80.00 & 100.00 & 80.00 & 0.882 & 0.397 & 0.273 & 30 & 2 & 8 & 0 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Avaliando SVM Linear com 160 amostras de treino e 40 amostras de teste para o vídeo PewDiePie.}
+\label{tab:linear-svm-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+SVM-050 & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
+SVM-075 & 87.50 & 73.33 & 4.00 & 0.815 & 0.732 & 0.722 & 11 & 24 & 1 & 4 \\ 
+SVM-100 & 85.00 & 85.00 & 15.00 & 0.850 & 0.700 & 0.700 & 17 & 17 & 3 & 3 \\ 
+SVM-125 & 85.00 & 92.00 & 26.67 & 0.885 & 0.675 & 0.671 & 23 & 11 & 4 & 2 \\ 
+SVM-150 & 90.00 & 100.00 & 40.00 & 0.938 & 0.728 & 0.692 & 30 & 6 & 4 & 0 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo MultinomialNB e 20 amostras de teste para o vídeo PewDiePie.}
+\label{tab:multinomial-nb-linear-svm-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+MultiNB \& SVM-050 & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
+MultiNB \& SVM-050 (thr 0.7) & 82.50 & 50.00 & 6.67 & 0.588 & 0.494 & 0.481 & 5 & 28 & 2 & 5 \\ 
+MultiNB \& SVM-050 (thr 0.8) & 82.50 & 50.00 & 6.67 & 0.588 & 0.494 & 0.481 & 5 & 28 & 2 & 5 \\ 
+MultiNB \& SVM-050 (thr 0.9) & 77.50 & 40.00 & 10.00 & 0.471 & 0.342 & 0.333 & 4 & 27 & 3 & 6 \\ 
+MultiNB \& SVM-075 & 90.00 & 86.67 & 8.00 & 0.867 & 0.787 & 0.787 & 13 & 23 & 2 & 2 \\ 
+MultiNB \& SVM-075 (thr 0.7) & 57.50 & 40.00 & 32.00 & 0.414 & 0.081 & 0.081 & 6 & 17 & 8 & 9 \\ 
+MultiNB \& SVM-075 (thr 0.8) & 72.50 & 60.00 & 20.00 & 0.621 & 0.406 & 0.405 & 9 & 20 & 5 & 6 \\ 
+MultiNB \& SVM-075 (thr 0.9) & 67.50 & 46.67 & 20.00 & 0.519 & 0.282 & 0.278 & 7 & 20 & 5 & 8 \\ 
+MultiNB \& SVM-100 & 87.50 & 90.00 & 15.00 & 0.878 & 0.751 & 0.750 & 18 & 17 & 3 & 2 \\ 
+MultiNB \& SVM-100 (thr 0.7) & 65.00 & 70.00 & 40.00 & 0.667 & 0.302 & 0.300 & 14 & 12 & 8 & 6 \\ 
+MultiNB \& SVM-100 (thr 0.8) & 75.00 & 75.00 & 25.00 & 0.750 & 0.500 & 0.500 & 15 & 15 & 5 & 5 \\ 
+MultiNB \& SVM-100 (thr 0.9) & 75.00 & 75.00 & 25.00 & 0.750 & 0.500 & 0.500 & 15 & 15 & 5 & 5 \\ 
+MultiNB \& SVM-125 & 80.00 & 92.00 & 40.00 & 0.852 & 0.564 & 0.549 & 23 & 9 & 6 & 2 \\ 
+MultiNB \& SVM-125 (thr 0.7) & 62.50 & 76.00 & 60.00 & 0.717 & 0.169 & 0.167 & 19 & 6 & 9 & 6 \\ 
+MultiNB \& SVM-125 (thr 0.8) & 57.50 & 72.00 & 66.67 & 0.679 & 0.056 & 0.056 & 18 & 5 & 10 & 7 \\ 
+MultiNB \& SVM-125 (thr 0.9) & 77.50 & 84.00 & 33.33 & 0.824 & 0.514 & 0.514 & 21 & 10 & 5 & 4 \\ 
+MultiNB \& SVM-150 & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+MultiNB \& SVM-150 (thr 0.7) & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+MultiNB \& SVM-150 (thr 0.8) & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+MultiNB \& SVM-150 (thr 0.9) & 75.00 & 90.00 & 70.00 & 0.844 & 0.243 & 0.231 & 27 & 3 & 7 & 3 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelPropagation RBF e 20 amostras de teste para o vídeo PewDiePie.}
+\label{tab:labprop-rbf-linear-svm-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+LabProp \& SVM-050 & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
+LabProp \& SVM-050 (thr 0.7) & 80.00 & 30.00 & 3.33 & 0.429 & 0.385 & 0.333 & 3 & 29 & 1 & 7 \\ 
+LabProp \& SVM-050 (thr 0.8) & 80.00 & 30.00 & 3.33 & 0.429 & 0.385 & 0.333 & 3 & 29 & 1 & 7 \\ 
+LabProp \& SVM-050 (thr 0.9) & 80.00 & 30.00 & 3.33 & 0.429 & 0.385 & 0.333 & 3 & 29 & 1 & 7 \\ 
+LabProp \& SVM-075 & 87.50 & 73.33 & 4.00 & 0.815 & 0.732 & 0.722 & 11 & 24 & 1 & 4 \\ 
+LabProp \& SVM-075 (thr 0.7) & 72.50 & 60.00 & 20.00 & 0.621 & 0.406 & 0.405 & 9 & 20 & 5 & 6 \\ 
+LabProp \& SVM-075 (thr 0.8) & 72.50 & 60.00 & 20.00 & 0.621 & 0.406 & 0.405 & 9 & 20 & 5 & 6 \\ 
+LabProp \& SVM-075 (thr 0.9) & 87.50 & 73.33 & 4.00 & 0.815 & 0.732 & 0.722 & 11 & 24 & 1 & 4 \\ 
+LabProp \& SVM-100 & 80.00 & 85.00 & 25.00 & 0.810 & 0.603 & 0.600 & 17 & 15 & 5 & 3 \\ 
+LabProp \& SVM-100 (thr 0.7) & 67.50 & 65.00 & 30.00 & 0.667 & 0.350 & 0.350 & 13 & 14 & 6 & 7 \\ 
+LabProp \& SVM-100 (thr 0.8) & 60.00 & 60.00 & 40.00 & 0.600 & 0.200 & 0.200 & 12 & 12 & 8 & 8 \\ 
+LabProp \& SVM-100 (thr 0.9) & 60.00 & 60.00 & 40.00 & 0.600 & 0.200 & 0.200 & 12 & 12 & 8 & 8 \\ 
+LabProp \& SVM-125 & 75.00 & 92.00 & 53.33 & 0.821 & 0.448 & 0.420 & 23 & 7 & 8 & 2 \\ 
+LabProp \& SVM-125 (thr 0.7) & 72.50 & 84.00 & 46.67 & 0.792 & 0.394 & 0.389 & 21 & 8 & 7 & 4 \\ 
+LabProp \& SVM-125 (thr 0.8) & 62.50 & 72.00 & 53.33 & 0.706 & 0.189 & 0.189 & 18 & 7 & 8 & 7 \\ 
+LabProp \& SVM-125 (thr 0.9) & 65.00 & 76.00 & 53.33 & 0.731 & 0.234 & 0.233 & 19 & 7 & 8 & 6 \\ 
+LabProp \& SVM-150 & 85.00 & 100.00 & 60.00 & 0.909 & 0.577 & 0.500 & 30 & 4 & 6 & 0 \\ 
+LabProp \& SVM-150 (thr 0.7) & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+LabProp \& SVM-150 (thr 0.8) & 87.50 & 100.00 & 50.00 & 0.923 & 0.655 & 0.600 & 30 & 5 & 5 & 0 \\ 
+LabProp \& SVM-150 (thr 0.9) & 75.00 & 90.00 & 70.00 & 0.844 & 0.243 & 0.231 & 27 & 3 & 7 & 3 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
+\begin{table}[!htb]
+\centering
+\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelSpreading RBF e 20 amostras de teste para o vídeo PewDiePie.}
+\label{tab:labspread-rbf-linear-svm-PewDiePie}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
+LabSpread \& SVM-050 & 90.00 & 60.00 & 0.00 & 0.750 & 0.728 & 0.692 & 6 & 30 & 0 & 4 \\ 
+LabSpread \& SVM-050 (thr 0.7) & 82.50 & 40.00 & 3.33 & 0.533 & 0.480 & 0.440 & 4 & 29 & 1 & 6 \\ 
+LabSpread \& SVM-050 (thr 0.8) & 82.50 & 40.00 & 3.33 & 0.533 & 0.480 & 0.440 & 4 & 29 & 1 & 6 \\ 
+LabSpread \& SVM-050 (thr 0.9) & 80.00 & 30.00 & 3.33 & 0.429 & 0.385 & 0.333 & 3 & 29 & 1 & 7 \\ 
+LabSpread \& SVM-075 & 90.00 & 73.33 & 0.00 & 0.846 & 0.795 & 0.775 & 11 & 25 & 0 & 4 \\ 
+LabSpread \& SVM-075 (thr 0.7) & 62.50 & 46.67 & 28.00 & 0.483 & 0.189 & 0.189 & 7 & 18 & 7 & 8 \\ 
+LabSpread \& SVM-075 (thr 0.8) & 72.50 & 53.33 & 16.00 & 0.593 & 0.394 & 0.389 & 8 & 21 & 4 & 7 \\ 
+LabSpread \& SVM-075 (thr 0.9) & 77.50 & 60.00 & 12.00 & 0.667 & 0.507 & 0.500 & 9 & 22 & 3 & 6 \\ 
+LabSpread \& SVM-100 & 87.50 & 85.00 & 10.00 & 0.872 & 0.751 & 0.750 & 17 & 18 & 2 & 3 \\ 
+LabSpread \& SVM-100 (thr 0.7) & 72.50 & 70.00 & 25.00 & 0.718 & 0.451 & 0.450 & 14 & 15 & 5 & 6 \\ 
+LabSpread \& SVM-100 (thr 0.8) & 77.50 & 75.00 & 20.00 & 0.769 & 0.551 & 0.550 & 15 & 16 & 4 & 5 \\ 
+LabSpread \& SVM-100 (thr 0.9) & 55.00 & 55.00 & 45.00 & 0.550 & 0.100 & 0.100 & 11 & 11 & 9 & 9 \\ 
+LabSpread \& SVM-125 & 77.50 & 88.00 & 40.00 & 0.830 & 0.507 & 0.500 & 22 & 9 & 6 & 3 \\ 
+LabSpread \& SVM-125 (thr 0.7) & 67.50 & 76.00 & 46.67 & 0.745 & 0.298 & 0.297 & 19 & 8 & 7 & 6 \\ 
+LabSpread \& SVM-125 (thr 0.8) & 70.00 & 80.00 & 46.67 & 0.769 & 0.345 & 0.342 & 20 & 8 & 7 & 5 \\ 
+LabSpread \& SVM-125 (thr 0.9) & 70.00 & 80.00 & 46.67 & 0.769 & 0.345 & 0.342 & 20 & 8 & 7 & 5 \\ 
+LabSpread \& SVM-150 & 85.00 & 96.67 & 50.00 & 0.906 & 0.566 & 0.538 & 29 & 5 & 5 & 1 \\ 
+LabSpread \& SVM-150 (thr 0.7) & 82.50 & 96.67 & 60.00 & 0.892 & 0.480 & 0.440 & 29 & 4 & 6 & 1 \\ 
+LabSpread \& SVM-150 (thr 0.8) & 82.50 & 96.67 & 60.00 & 0.892 & 0.480 & 0.440 & 29 & 4 & 6 & 1 \\ 
+LabSpread \& SVM-150 (thr 0.9) & 80.00 & 93.33 & 60.00 & 0.875 & 0.404 & 0.385 & 28 & 4 & 6 & 2 \\ 
+\hline\hline
+\end{tabular}
+\end{table}
