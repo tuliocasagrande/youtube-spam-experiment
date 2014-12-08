@@ -137,7 +137,9 @@ class DualClassification(BaseClassification):
     # The scores should consider all errors
 
     if self.threshold:
-      y_true = np.concatenate([self.y_semisupervised, self.y_test])
+      y_true = np.concatenate([self.y_semisupervised[self.above_threshold],
+                               self.y_semisupervised[~self.above_threshold],
+                               self.y_test])
       y_pred = np.concatenate([self.y_pred_interm[self.above_threshold], self.y_pred_final])
 
     else:
