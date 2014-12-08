@@ -18,6 +18,7 @@ A total of 300 comments from each video were labeled by hand -- (1) spam or (0) 
 More information about the videos can be found [here][1].
 
 From each original dataset was created 5 subsets, with 200 comments:
+
 \# | Spam | Ham | Description
 ---| ---- | --- | -----------
 1  | 50   | 150 | highly unbalanced (more ham)

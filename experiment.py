@@ -10,6 +10,7 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.metrics  import accuracy_score, f1_score, matthews_corrcoef
 from skll.metrics  import kappa
 from sklearn.naive_bayes import BernoulliNB, MultinomialNB
+from sklearn.pipeline import Pipeline
 from sklearn.semi_supervised import LabelPropagation, LabelSpreading
 from sklearn.svm import LinearSVC
 
@@ -364,17 +365,21 @@ def execute(file_prefix):
               'tab:labspread-rbf-linear-svm-{0}'.format(video_title)]
 
     # Parameters for grid search
-    range5 = list((10.0**i) for i in range(-5,5))
+    range5 = [10.0 ** i for i in range(-5,5)]
+    range_percent = [10 * i for i in range(1,11)]
     param_gamma = {'gamma': range5}
     param_C = {'C': range5}
-    # param_k = {'n_neighbors': [1,3,5,7]}
+    param_percentile = {'selectpercentile__percentile': range_percent}
 
     # ========================== MultinomialNB 160/40 ==========================
     output_file.write(print_table_header(captions[0], labels[0]))
-    nb_clf = MultinomialNB()
+
+    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                         ("multinomialnb", MultinomialNB())])
+    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
     for each in suffix_list:
-      y_true, y_pred = experiment_one_clf(file_prefix + each + '.csv', nb_clf)
+      y_true, y_pred = experiment_one_clf(file_prefix + each + '.csv', nb_grid)
       output_file.write('MultinomialNB{0} & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
@@ -382,10 +387,13 @@ def execute(file_prefix):
 
     # =========================== BernoulliNB 160/40 ===========================
     output_file.write(print_table_header(captions[1], labels[1]))
-    nb_clf = BernoulliNB()
+
+    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                         ("bernoullinb", BernoulliNB())])
+    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
     for each in suffix_list:
-      y_true, y_pred = experiment_one_clf(file_prefix + each + '.csv', nb_clf)
+      y_true, y_pred = experiment_one_clf(file_prefix + each + '.csv', nb_grid)
       output_file.write('BernoulliNB{0} & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
@@ -405,22 +413,25 @@ def execute(file_prefix):
     # ================= MultinomialNB + LinearSVM 160/20/20 ====================
     output_file.write(print_table_header(captions[3], labels[3]))
     svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-    nb_clf = MultinomialNB()
+    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                         ("multinomialnb", MultinomialNB())])
+    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
 
     for each in suffix_list:
-      y_true, y_pred = experiment_dual_clf(file_prefix + each + '.csv', nb_clf, svm_grid)
+      y_true, y_pred = experiment_dual_clf(file_prefix + each + '.csv', nb_grid, svm_grid)
       output_file.write('MultiNB \& SVM{0} & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
-      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_clf, svm_grid, 0.7)
+      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_grid, svm_grid, 0.7)
       output_file.write('MultiNB \& SVM{0} (thr 0.7) & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
-      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_clf, svm_grid)
+      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_grid, svm_grid)
       output_file.write('MultiNB \& SVM{0} (thr 0.8) & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
-      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_clf, svm_grid, 0.9)
+      y_true, y_pred = experiment_dual_clf_with_thresh(file_prefix + each + '.csv', nb_grid, svm_grid, 0.9)
       output_file.write('MultiNB \& SVM{0} (thr 0.9) & '.format(each))
       output_file.write(print_scores(y_true, y_pred))
 
