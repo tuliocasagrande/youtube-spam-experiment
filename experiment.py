@@ -3,6 +3,7 @@
 
 from classification import SingleClassification, DualClassification, SemiSupervisedClassification
 import csv
+import matplotlib.pyplot as plt
 import numpy as np
 import os
 from sklearn.feature_extraction.text import CountVectorizer
@@ -26,7 +27,7 @@ def print_table_header(caption, label):
 
   return s
 
-def print_scores(y_true, y_pred):
+def calculate_scores(y_true, y_pred):
   acc = accuracy_score(y_true, y_pred)
   f1 = f1_score(y_true, y_pred)
   mcc = matthews_corrcoef(y_true, y_pred)
@@ -60,9 +61,29 @@ def print_table_footer():
 
   return s
 
+def plot_figure(figure_name, scores_list):
+  plt.figure()
+  plt.title(figure_name)
+  plt.xlabel('F-medida')
+
+  performance = [f1 for f1, title, scores in scores_list]
+  classifiers = tuple(title for f1, title, scores in scores_list)
+  y_pos = np.arange(len(classifiers))
+  plt.yticks(y_pos, classifiers)
+
+  bar = plt.barh(y_pos, performance, align='center', alpha=0.4)
+  best = performance[0]
+  for i, p in enumerate(performance):
+    if p == best:
+      bar[i].set_color('r')
+
+  plt.xticks(np.arange(0, 1.1, 0.1)) # guarantee an interval [0,1]
+  plt.savefig(os.path.join('figures', figure_name + '.png'), bbox_inches='tight')
+  plt.savefig(os.path.join('figures', figure_name + '.pdf'), bbox_inches='tight')
+
 def execute_ordered_by_data(file_prefix):
 
-  with open('results/'+os.path.basename(file_prefix)+'.tex', 'w') as output_file:
+  with open(os.path.join('results', os.path.basename(file_prefix)+'.tex'), 'w') as output_file:
 
     video_title = os.path.basename(file_prefix).split('-')[0]
     suffix_list = ['050', '075', '100', '125', '150']
@@ -75,7 +96,7 @@ def execute_ordered_by_data(file_prefix):
     param_percentile = {'selectpercentile__percentile': range_percent}
 
     for suffix in suffix_list:
-      ordered_scores_list = []
+      scores_list = []
       caption = 'Resultados dos métodos de aprendizado de máquina para a base {0} do vídeo {1}.'.format(suffix, video_title)
       label = 'tab:{0}-{1}'.format(video_title, suffix)
       output_file.write(print_table_header(caption, label))
@@ -87,9 +108,9 @@ def execute_ordered_by_data(file_prefix):
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
       y_true, y_pred = SingleClassification(filename, nb_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'MultinomialNB & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultinomialNB'
+      scores_list.append((f1, title, scores))
 
       # ========================== BernoulliNB 160/40 ==========================
       pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
@@ -97,17 +118,17 @@ def execute_ordered_by_data(file_prefix):
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
       y_true, y_pred = SingleClassification(filename, nb_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'BernoulliNB & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoulliNB'
+      scores_list.append((f1, title, scores))
 
       # =========================== LinearSVM 160/40 ===========================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
 
       y_true, y_pred = SingleClassification(filename, svm_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'SVM & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'SVM'
+      scores_list.append((f1, title, scores))
 
       # ================= MultinomialNB + LinearSVM 160/20/20 ==================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
@@ -116,14 +137,14 @@ def execute_ordered_by_data(file_prefix):
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'MultiNB \& SVM & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultiNB & SVM'
+      scores_list.append((f1, title, scores))
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'MultiNB \& SVM (thresh 0.9) & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultiNB & SVM (thresh 0.9)'
+      scores_list.append((f1, title, scores))
 
       # ================= BernoulliNB + LinearSVM 160/20/20 ==================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
@@ -132,203 +153,58 @@ def execute_ordered_by_data(file_prefix):
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'BernoNB \& SVM & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoNB & SVM'
+      scores_list.append((f1, title, scores))
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'BernoNB \& SVM (thresh 0.9) & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoNB & SVM (thresh 0.9)'
+      scores_list.append((f1, title, scores))
 
       # ============== LabelPropagationRBF + LinearSVM 160/20/20 ===============
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
       lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'LabProp \& SVM & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabProp & SVM'
+      scores_list.append((f1, title, scores))
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.9).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'LabProp \& SVM (thresh 0.9) & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabProp & SVM (thresh 0.9)'
+      scores_list.append((f1, title, scores))
 
       # =============== LabelSpreadingRBF + LinearSVM 160/20/20 ================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
       lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'LabSpread \& SVM & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabSpread & SVM'
+      scores_list.append((f1, title, scores))
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.9).classify()
-      scores, f1 = print_scores(y_true, y_pred)
-      title = 'LabSpread \& SVM (thresh 0.9) & '
-      ordered_scores_list.append((f1, title, scores))
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabSpread & SVM (thresh 0.9)'
+      scores_list.append((f1, title, scores))
 
-      ordered_scores_list.sort(key=lambda scores: scores[0], reverse=True)
+      # ================================ SCORES ================================
+      ordered_scores_list = sorted(scores_list, key=lambda scores: scores[0], reverse=True)
+
+      plot_figure('{0}-{1}'.format(video_title, suffix), ordered_scores_list)
+
       for f1, title, scores in ordered_scores_list:
-        output_file.write(title + scores)
+        output_file.write(title.replace('&','\&') + ' & ' + scores)
       output_file.write(print_table_footer())
-
-
-
-def execute(file_prefix):
-
-  with open('results/'+os.path.basename(file_prefix)+'.tex', 'w') as output_file:
-
-    video_title = os.path.basename(file_prefix).split('-')[0]
-    suffix_list = ['-050', '-075', '-100', '-125', '-150']
-
-    captions = ['Avaliando MultinomialNB com 160 amostras de treino e 40 amostras de teste para o vídeo {0}.'.format(video_title),
-                'Avaliando BernoulliNB com 160 amostras de treino e 40 amostras de teste para o vídeo {0}.'.format(video_title),
-                'Avaliando SVM Linear com 160 amostras de treino e 40 amostras de teste para o vídeo {0}.'.format(video_title),
-                'Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo MultinomialNB e 20 amostras de teste para o vídeo {0}.'.format(video_title),
-                'Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelPropagation RBF e 20 amostras de teste para o vídeo {0}.'.format(video_title),
-                'Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelSpreading RBF e 20 amostras de teste para o vídeo {0}.'.format(video_title)]
-
-    labels = ['tab:multinomial-nb-{0}'.format(video_title),
-              'tab:bernoulli-nb-{0}'.format(video_title),
-              'tab:linear-svm-{0}'.format(video_title),
-              'tab:multinomial-nb-linear-svm-{0}'.format(video_title),
-              'tab:labprop-rbf-linear-svm-{0}'.format(video_title),
-              'tab:labspread-rbf-linear-svm-{0}'.format(video_title)]
-
-    # Parameters for grid search
-    range5 = [10.0 ** i for i in range(-5,5)]
-    range_percent = [10 * i for i in range(1,11)]
-    param_gamma = {'gamma': range5}
-    param_C = {'C': range5}
-    param_percentile = {'selectpercentile__percentile': range_percent}
-
-    # ========================== MultinomialNB 160/40 ==========================
-    output_file.write(print_table_header(captions[0], labels[0]))
-
-    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
-                         ("multinomialnb", MultinomialNB())])
-    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = SingleClassification(filename, nb_grid).classify()
-      output_file.write('MultinomialNB{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
-    # =========================== BernoulliNB 160/40 ===========================
-    output_file.write(print_table_header(captions[1], labels[1]))
-
-    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
-                         ("bernoullinb", BernoulliNB())])
-    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = SingleClassification(filename, nb_grid).classify()
-      output_file.write('BernoulliNB{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
-    # ============================ LinearSVM 160/40 ============================
-    output_file.write(print_table_header(captions[2], labels[2]))
-    svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = SingleClassification(filename, svm_grid).classify()
-      output_file.write('SVM{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
-    # ================= MultinomialNB + LinearSVM 160/20/20 ====================
-    output_file.write(print_table_header(captions[3], labels[3]))
-    svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
-                         ("multinomialnb", MultinomialNB())])
-    nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
-
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid).classify()
-      output_file.write('MultiNB \& SVM{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.7).classify()
-      output_file.write('MultiNB \& SVM{0} (thr 0.7) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.8).classify()
-      output_file.write('MultiNB \& SVM{0} (thr 0.8) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
-      output_file.write('MultiNB \& SVM{0} (thr 0.9) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
-    # ============== LabelPropagationRBF + LinearSVM 160/20/20 =================
-    output_file.write(print_table_header(captions[4], labels[4]))
-    svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-    lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid).classify()
-      output_file.write('LabProp \& SVM{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.7).classify()
-      output_file.write('LabProp \& SVM{0} (thr 0.7) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.8).classify()
-      output_file.write('LabProp \& SVM{0} (thr 0.8) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.9).classify()
-      output_file.write('LabProp \& SVM{0} (thr 0.9) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
-    # =============== LabelSpreadingRBF + LinearSVM 160/20/20 ==================
-    output_file.write(print_table_header(captions[5], labels[5]))
-    svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-    lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
-
-    for each in suffix_list:
-      filename = file_prefix + each + '.csv'
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid).classify()
-      output_file.write('LabSpread \& SVM{0} & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.7).classify()
-      output_file.write('LabSpread \& SVM{0} (thr 0.7) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.8).classify()
-      output_file.write('LabSpread \& SVM{0} (thr 0.8) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.9).classify()
-      output_file.write('LabSpread \& SVM{0} (thr 0.9) & '.format(each))
-      output_file.write(print_scores(y_true, y_pred))
-
-    output_file.write(print_table_footer())
-
 
 if __name__ == "__main__":
   if not os.path.exists('results'):
     os.makedirs('results')
+  if not os.path.exists('figures'):
+    os.makedirs('figures')
 
-  execute_ordered_by_data('data/KatyPerry-CevxZvSJLk8')
-  execute_ordered_by_data('data/PewDiePie-gRyPjRrjS34')
-  execute_ordered_by_data('data/Psy-9bZkp7q19f0')
+  execute_ordered_by_data(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
+  execute_ordered_by_data(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
+  execute_ordered_by_data(os.path.join('data', 'Psy-9bZkp7q19f0'))
