@@ -1,135 +1,105 @@
 \begin{table}[!htb]
 \centering
-\caption{Avaliando MultinomialNB com 160 amostras de treino e 40 amostras de teste para o vídeo KatyPerry.}
-\label{tab:multinomial-nb-KatyPerry}
+\caption{Resultados dos métodos de aprendizado de máquina para a base 050 do vídeo KatyPerry.}
+\label{tab:KatyPerry-050}
 \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
 \hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-MultinomialNB-050 & 92.50 & 70.00 & 0.00 & 0.824 & 0.798 & 0.778 & 7 & 30 & 0 & 3 \\ 
-MultinomialNB-075 & 95.00 & 86.67 & 0.00 & 0.929 & 0.896 & 0.890 & 13 & 25 & 0 & 2 \\ 
-MultinomialNB-100 & 92.50 & 95.00 & 10.00 & 0.927 & 0.851 & 0.850 & 19 & 18 & 2 & 1 \\ 
-MultinomialNB-125 & 87.50 & 96.00 & 26.67 & 0.906 & 0.732 & 0.722 & 24 & 11 & 4 & 1 \\ 
-MultinomialNB-150 & 85.00 & 96.67 & 50.00 & 0.906 & 0.566 & 0.538 & 29 & 5 & 5 & 1 \\ 
+SVM & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
+MultiNB \& SVM & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
+MultiNB \& SVM (thresh 0.9) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
+LabSpread \& SVM (thresh 0.9) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
+MultinomialNB & 92.50 & 70.00 & 0.00 & 0.824 & 0.798 & 0.778 & 7 & 30 & 0 & 3 \\ 
+BernoNB \& SVM & 90.00 & 60.00 & 0.00 & 0.750 & 0.728 & 0.692 & 6 & 30 & 0 & 4 \\ 
+BernoNB \& SVM (thresh 0.9) & 90.00 & 60.00 & 0.00 & 0.750 & 0.728 & 0.692 & 6 & 30 & 0 & 4 \\ 
+LabSpread \& SVM & 87.50 & 50.00 & 0.00 & 0.667 & 0.655 & 0.600 & 5 & 30 & 0 & 5 \\ 
+BernoulliNB & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
+LabProp \& SVM (thresh 0.9) & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
+LabProp \& SVM & 82.50 & 30.00 & 0.00 & 0.462 & 0.493 & 0.391 & 3 & 30 & 0 & 7 \\ 
 \hline\hline
 \end{tabular}
 \end{table}
 \begin{table}[!htb]
 \centering
-\caption{Avaliando BernoulliNB com 160 amostras de treino e 40 amostras de teste para o vídeo KatyPerry.}
-\label{tab:bernoulli-nb-KatyPerry}
+\caption{Resultados dos métodos de aprendizado de máquina para a base 075 do vídeo KatyPerry.}
+\label{tab:KatyPerry-075}
 \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
 \hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-BernoulliNB-050 & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
-BernoulliNB-075 & 97.50 & 93.33 & 0.00 & 0.966 & 0.947 & 0.946 & 14 & 25 & 0 & 1 \\ 
-BernoulliNB-100 & 92.50 & 85.00 & 0.00 & 0.919 & 0.860 & 0.850 & 17 & 20 & 0 & 3 \\ 
-BernoulliNB-125 & 92.50 & 96.00 & 13.33 & 0.941 & 0.839 & 0.838 & 24 & 13 & 2 & 1 \\ 
-BernoulliNB-150 & 75.00 & 93.33 & 80.00 & 0.848 & 0.192 & 0.167 & 28 & 2 & 8 & 2 \\ 
+BernoulliNB & 97.50 & 93.33 & 0.00 & 0.966 & 0.947 & 0.946 & 14 & 25 & 0 & 1 \\ 
+MultinomialNB & 95.00 & 86.67 & 0.00 & 0.929 & 0.896 & 0.890 & 13 & 25 & 0 & 2 \\ 
+BernoNB \& SVM (thresh 0.9) & 95.00 & 86.67 & 0.00 & 0.929 & 0.896 & 0.890 & 13 & 25 & 0 & 2 \\ 
+SVM & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+MultiNB \& SVM & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+MultiNB \& SVM (thresh 0.9) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+BernoNB \& SVM & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+LabSpread \& SVM & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+LabSpread \& SVM (thresh 0.9) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
+LabProp \& SVM & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
+LabProp \& SVM (thresh 0.9) & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
 \hline\hline
 \end{tabular}
 \end{table}
 \begin{table}[!htb]
 \centering
-\caption{Avaliando SVM Linear com 160 amostras de treino e 40 amostras de teste para o vídeo KatyPerry.}
-\label{tab:linear-svm-KatyPerry}
+\caption{Resultados dos métodos de aprendizado de máquina para a base 100 do vídeo KatyPerry.}
+\label{tab:KatyPerry-100}
 \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
 \hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-SVM-050 & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-SVM-075 & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-SVM-100 & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-SVM-125 & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
-SVM-150 & 92.50 & 96.67 & 20.00 & 0.951 & 0.795 & 0.793 & 29 & 8 & 2 & 1 \\ 
+LabProp \& SVM (thresh 0.9) & 97.50 & 95.00 & 0.00 & 0.974 & 0.951 & 0.950 & 19 & 20 & 0 & 1 \\ 
+LabSpread \& SVM (thresh 0.9) & 97.50 & 95.00 & 0.00 & 0.974 & 0.951 & 0.950 & 19 & 20 & 0 & 1 \\ 
+SVM & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
+MultiNB \& SVM & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
+MultiNB \& SVM (thresh 0.9) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
+BernoNB \& SVM (thresh 0.9) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
+MultinomialNB & 92.50 & 95.00 & 10.00 & 0.927 & 0.851 & 0.850 & 19 & 18 & 2 & 1 \\ 
+BernoulliNB & 92.50 & 85.00 & 0.00 & 0.919 & 0.860 & 0.850 & 17 & 20 & 0 & 3 \\ 
+BernoNB \& SVM & 92.50 & 85.00 & 0.00 & 0.919 & 0.860 & 0.850 & 17 & 20 & 0 & 3 \\ 
+LabSpread \& SVM & 80.00 & 60.00 & 0.00 & 0.750 & 0.655 & 0.600 & 12 & 20 & 0 & 8 \\ 
+LabProp \& SVM & 77.50 & 65.00 & 10.00 & 0.743 & 0.568 & 0.550 & 13 & 18 & 2 & 7 \\ 
 \hline\hline
 \end{tabular}
 \end{table}
 \begin{table}[!htb]
 \centering
-\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo MultinomialNB e 20 amostras de teste para o vídeo KatyPerry.}
-\label{tab:multinomial-nb-linear-svm-KatyPerry}
+\caption{Resultados dos métodos de aprendizado de máquina para a base 125 do vídeo KatyPerry.}
+\label{tab:KatyPerry-125}
 \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
 \hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-MultiNB \& SVM-050 & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-MultiNB \& SVM-050 (thr 0.7) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-MultiNB \& SVM-050 (thr 0.8) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-MultiNB \& SVM-050 (thr 0.9) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-MultiNB \& SVM-075 & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-MultiNB \& SVM-075 (thr 0.7) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-MultiNB \& SVM-075 (thr 0.8) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-MultiNB \& SVM-075 (thr 0.9) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-MultiNB \& SVM-100 & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-MultiNB \& SVM-100 (thr 0.7) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-MultiNB \& SVM-100 (thr 0.8) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-MultiNB \& SVM-100 (thr 0.9) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-MultiNB \& SVM-125 & 95.00 & 96.00 & 6.67 & 0.960 & 0.893 & 0.893 & 24 & 14 & 1 & 1 \\ 
-MultiNB \& SVM-125 (thr 0.7) & 95.00 & 96.00 & 6.67 & 0.960 & 0.893 & 0.893 & 24 & 14 & 1 & 1 \\ 
-MultiNB \& SVM-125 (thr 0.8) & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
-MultiNB \& SVM-125 (thr 0.9) & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
-MultiNB \& SVM-150 & 87.50 & 93.33 & 30.00 & 0.918 & 0.657 & 0.655 & 28 & 7 & 3 & 2 \\ 
-MultiNB \& SVM-150 (thr 0.7) & 92.50 & 96.67 & 20.00 & 0.951 & 0.795 & 0.793 & 29 & 8 & 2 & 1 \\ 
-MultiNB \& SVM-150 (thr 0.8) & 90.00 & 93.33 & 20.00 & 0.933 & 0.733 & 0.733 & 28 & 8 & 2 & 2 \\ 
-MultiNB \& SVM-150 (thr 0.9) & 95.00 & 100.00 & 20.00 & 0.968 & 0.866 & 0.857 & 30 & 8 & 2 & 0 \\ 
+SVM & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
+MultiNB \& SVM (thresh 0.9) & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
+BernoNB \& SVM (thresh 0.9) & 97.50 & 96.00 & 0.00 & 0.980 & 0.949 & 0.947 & 24 & 15 & 0 & 1 \\ 
+MultiNB \& SVM & 95.00 & 96.00 & 6.67 & 0.960 & 0.893 & 0.893 & 24 & 14 & 1 & 1 \\ 
+BernoNB \& SVM & 95.00 & 96.00 & 6.67 & 0.960 & 0.893 & 0.893 & 24 & 14 & 1 & 1 \\ 
+LabProp \& SVM & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
+LabProp \& SVM (thresh 0.9) & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
+LabSpread \& SVM & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
+LabSpread \& SVM (thresh 0.9) & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
+BernoulliNB & 92.50 & 96.00 & 13.33 & 0.941 & 0.839 & 0.838 & 24 & 13 & 2 & 1 \\ 
+MultinomialNB & 87.50 & 96.00 & 26.67 & 0.906 & 0.732 & 0.722 & 24 & 11 & 4 & 1 \\ 
 \hline\hline
 \end{tabular}
 \end{table}
 \begin{table}[!htb]
 \centering
-\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelPropagation RBF e 20 amostras de teste para o vídeo KatyPerry.}
-\label{tab:labprop-rbf-linear-svm-KatyPerry}
+\caption{Resultados dos métodos de aprendizado de máquina para a base 150 do vídeo KatyPerry.}
+\label{tab:KatyPerry-150}
 \begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
 \hline\hline
 Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-LabProp \& SVM-050 & 82.50 & 30.00 & 0.00 & 0.462 & 0.493 & 0.391 & 3 & 30 & 0 & 7 \\ 
-LabProp \& SVM-050 (thr 0.7) & 82.50 & 30.00 & 0.00 & 0.462 & 0.493 & 0.391 & 3 & 30 & 0 & 7 \\ 
-LabProp \& SVM-050 (thr 0.8) & 82.50 & 30.00 & 0.00 & 0.462 & 0.493 & 0.391 & 3 & 30 & 0 & 7 \\ 
-LabProp \& SVM-050 (thr 0.9) & 85.00 & 40.00 & 0.00 & 0.571 & 0.577 & 0.500 & 4 & 30 & 0 & 6 \\ 
-LabProp \& SVM-075 & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
-LabProp \& SVM-075 (thr 0.7) & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
-LabProp \& SVM-075 (thr 0.8) & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
-LabProp \& SVM-075 (thr 0.9) & 80.00 & 46.67 & 0.00 & 0.636 & 0.595 & 0.522 & 7 & 25 & 0 & 8 \\ 
-LabProp \& SVM-100 & 77.50 & 65.00 & 10.00 & 0.743 & 0.568 & 0.550 & 13 & 18 & 2 & 7 \\ 
-LabProp \& SVM-100 (thr 0.7) & 92.50 & 85.00 & 0.00 & 0.919 & 0.860 & 0.850 & 17 & 20 & 0 & 3 \\ 
-LabProp \& SVM-100 (thr 0.8) & 92.50 & 85.00 & 0.00 & 0.919 & 0.860 & 0.850 & 17 & 20 & 0 & 3 \\ 
-LabProp \& SVM-100 (thr 0.9) & 97.50 & 95.00 & 0.00 & 0.974 & 0.951 & 0.950 & 19 & 20 & 0 & 1 \\ 
-LabProp \& SVM-125 & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
-LabProp \& SVM-125 (thr 0.7) & 92.50 & 88.00 & 0.00 & 0.936 & 0.856 & 0.846 & 22 & 15 & 0 & 3 \\ 
-LabProp \& SVM-125 (thr 0.8) & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
-LabProp \& SVM-125 (thr 0.9) & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
-LabProp \& SVM-150 & 85.00 & 93.33 & 40.00 & 0.903 & 0.577 & 0.571 & 28 & 6 & 4 & 2 \\ 
-LabProp \& SVM-150 (thr 0.7) & 92.50 & 93.33 & 10.00 & 0.949 & 0.808 & 0.806 & 28 & 9 & 1 & 2 \\ 
-LabProp \& SVM-150 (thr 0.8) & 92.50 & 93.33 & 10.00 & 0.949 & 0.808 & 0.806 & 28 & 9 & 1 & 2 \\ 
-LabProp \& SVM-150 (thr 0.9) & 90.00 & 90.00 & 10.00 & 0.931 & 0.756 & 0.750 & 27 & 9 & 1 & 3 \\ 
-\hline\hline
-\end{tabular}
-\end{table}
-\begin{table}[!htb]
-\centering
-\caption{Avaliando SVM Linear com 160 amostras rotuladas manualmente, 20 amostras rotuladas pelo LabelSpreading RBF e 20 amostras de teste para o vídeo KatyPerry.}
-\label{tab:labspread-rbf-linear-svm-KatyPerry}
-\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
-\hline\hline
-Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & Kappa & TP & TN & FP & FN \\ \hline
-LabSpread \& SVM-050 & 87.50 & 50.00 & 0.00 & 0.667 & 0.655 & 0.600 & 5 & 30 & 0 & 5 \\ 
-LabSpread \& SVM-050 (thr 0.7) & 87.50 & 50.00 & 0.00 & 0.667 & 0.655 & 0.600 & 5 & 30 & 0 & 5 \\ 
-LabSpread \& SVM-050 (thr 0.8) & 87.50 & 50.00 & 0.00 & 0.667 & 0.655 & 0.600 & 5 & 30 & 0 & 5 \\ 
-LabSpread \& SVM-050 (thr 0.9) & 95.00 & 80.00 & 0.00 & 0.889 & 0.866 & 0.857 & 8 & 30 & 0 & 2 \\ 
-LabSpread \& SVM-075 & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-LabSpread \& SVM-075 (thr 0.7) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-LabSpread \& SVM-075 (thr 0.8) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-LabSpread \& SVM-075 (thr 0.9) & 92.50 & 80.00 & 0.00 & 0.889 & 0.845 & 0.833 & 12 & 25 & 0 & 3 \\ 
-LabSpread \& SVM-100 & 80.00 & 60.00 & 0.00 & 0.750 & 0.655 & 0.600 & 12 & 20 & 0 & 8 \\ 
-LabSpread \& SVM-100 (thr 0.7) & 95.00 & 90.00 & 0.00 & 0.947 & 0.905 & 0.900 & 18 & 20 & 0 & 2 \\ 
-LabSpread \& SVM-100 (thr 0.8) & 97.50 & 95.00 & 0.00 & 0.974 & 0.951 & 0.950 & 19 & 20 & 0 & 1 \\ 
-LabSpread \& SVM-100 (thr 0.9) & 97.50 & 95.00 & 0.00 & 0.974 & 0.951 & 0.950 & 19 & 20 & 0 & 1 \\ 
-LabSpread \& SVM-125 & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
-LabSpread \& SVM-125 (thr 0.7) & 92.50 & 88.00 & 0.00 & 0.936 & 0.856 & 0.846 & 22 & 15 & 0 & 3 \\ 
-LabSpread \& SVM-125 (thr 0.8) & 92.50 & 88.00 & 0.00 & 0.936 & 0.856 & 0.846 & 22 & 15 & 0 & 3 \\ 
-LabSpread \& SVM-125 (thr 0.9) & 95.00 & 92.00 & 0.00 & 0.958 & 0.901 & 0.896 & 23 & 15 & 0 & 2 \\ 
-LabSpread \& SVM-150 & 80.00 & 93.33 & 60.00 & 0.875 & 0.404 & 0.385 & 28 & 4 & 6 & 2 \\ 
-LabSpread \& SVM-150 (thr 0.7) & 92.50 & 93.33 & 10.00 & 0.949 & 0.808 & 0.806 & 28 & 9 & 1 & 2 \\ 
-LabSpread \& SVM-150 (thr 0.8) & 95.00 & 96.67 & 10.00 & 0.967 & 0.867 & 0.867 & 29 & 9 & 1 & 1 \\ 
-LabSpread \& SVM-150 (thr 0.9) & 95.00 & 96.67 & 10.00 & 0.967 & 0.867 & 0.867 & 29 & 9 & 1 & 1 \\ 
+MultiNB \& SVM (thresh 0.9) & 95.00 & 100.00 & 20.00 & 0.968 & 0.866 & 0.857 & 30 & 8 & 2 & 0 \\ 
+BernoNB \& SVM (thresh 0.9) & 95.00 & 96.67 & 10.00 & 0.967 & 0.867 & 0.867 & 29 & 9 & 1 & 1 \\ 
+LabSpread \& SVM (thresh 0.9) & 95.00 & 96.67 & 10.00 & 0.967 & 0.867 & 0.867 & 29 & 9 & 1 & 1 \\ 
+SVM & 92.50 & 96.67 & 20.00 & 0.951 & 0.795 & 0.793 & 29 & 8 & 2 & 1 \\ 
+LabProp \& SVM (thresh 0.9) & 90.00 & 90.00 & 10.00 & 0.931 & 0.756 & 0.750 & 27 & 9 & 1 & 3 \\ 
+MultiNB \& SVM & 87.50 & 93.33 & 30.00 & 0.918 & 0.657 & 0.655 & 28 & 7 & 3 & 2 \\ 
+MultinomialNB & 85.00 & 96.67 & 50.00 & 0.906 & 0.566 & 0.538 & 29 & 5 & 5 & 1 \\ 
+BernoNB \& SVM & 85.00 & 93.33 & 40.00 & 0.903 & 0.577 & 0.571 & 28 & 6 & 4 & 2 \\ 
+LabProp \& SVM & 85.00 & 93.33 & 40.00 & 0.903 & 0.577 & 0.571 & 28 & 6 & 4 & 2 \\ 
+LabSpread \& SVM & 80.00 & 93.33 & 60.00 & 0.875 & 0.404 & 0.385 & 28 & 4 & 6 & 2 \\ 
+BernoulliNB & 75.00 & 93.33 & 80.00 & 0.848 & 0.192 & 0.167 & 28 & 2 & 8 & 2 \\ 
 \hline\hline
 \end{tabular}
 \end{table}

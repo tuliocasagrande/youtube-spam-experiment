@@ -47,11 +47,11 @@ def print_scores(y_true, y_pred):
   except ZeroDivisionError:
     bh = 0
 
-  s = '{0:.2f} & {1:.2f} & {2:.2f} & '.format(acc * 100, sc * 100, bh * 100)
-  s += '{0:.3f} & {1:.3f} & {2:.3f} & '.format(f1, mcc, kap)
-  s += '{0} & {1} & {2} & {3} \\\\ \n'.format(tp, tn, fp, fn)
+  scores = '{0:.2f} & {1:.2f} & {2:.2f} & '.format(acc * 100, sc * 100, bh * 100)
+  scores += '{0:.3f} & {1:.3f} & {2:.3f} & '.format(f1, mcc, kap)
+  scores += '{0} & {1} & {2} & {3} \\\\ \n'.format(tp, tn, fp, fn)
 
-  return s
+  return scores, f1
 
 def print_table_footer():
   s = '\\hline\\hline\n'
@@ -59,6 +59,122 @@ def print_table_footer():
   s += '\\end{table}\n'
 
   return s
+
+def execute_ordered_by_data(file_prefix):
+
+  with open('results/'+os.path.basename(file_prefix)+'.tex', 'w') as output_file:
+
+    video_title = os.path.basename(file_prefix).split('-')[0]
+    suffix_list = ['050', '075', '100', '125', '150']
+
+    # Parameters for grid search
+    range5 = [10.0 ** i for i in range(-5,5)]
+    range_percent = [10 * i for i in range(1,11)]
+    param_gamma = {'gamma': range5}
+    param_C = {'C': range5}
+    param_percentile = {'selectpercentile__percentile': range_percent}
+
+    for suffix in suffix_list:
+      ordered_scores_list = []
+      caption = 'Resultados dos métodos de aprendizado de máquina para a base {0} do vídeo {1}.'.format(suffix, video_title)
+      label = 'tab:{0}-{1}'.format(video_title, suffix)
+      output_file.write(print_table_header(caption, label))
+      filename = file_prefix + '-' + suffix + '.csv'
+
+      # ========================= MultinomialNB 160/40 =========================
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                         ("multinomialnb", MultinomialNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, nb_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'MultinomialNB & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # ========================== BernoulliNB 160/40 ==========================
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("bernoullinb", BernoulliNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, nb_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'BernoulliNB & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # =========================== LinearSVM 160/40 ===========================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, svm_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'SVM & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # ================= MultinomialNB + LinearSVM 160/20/20 ==================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("multinomialnb", MultinomialNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'MultiNB \& SVM & '
+      ordered_scores_list.append((f1, title, scores))
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'MultiNB \& SVM (thresh 0.9) & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # ================= BernoulliNB + LinearSVM 160/20/20 ==================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("bernoullinb", BernoulliNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'BernoNB \& SVM & '
+      ordered_scores_list.append((f1, title, scores))
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'BernoNB \& SVM (thresh 0.9) & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # ============== LabelPropagationRBF + LinearSVM 160/20/20 ===============
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'LabProp \& SVM & '
+      ordered_scores_list.append((f1, title, scores))
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.9).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'LabProp \& SVM (thresh 0.9) & '
+      ordered_scores_list.append((f1, title, scores))
+
+      # =============== LabelSpreadingRBF + LinearSVM 160/20/20 ================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'LabSpread \& SVM & '
+      ordered_scores_list.append((f1, title, scores))
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.9).classify()
+      scores, f1 = print_scores(y_true, y_pred)
+      title = 'LabSpread \& SVM (thresh 0.9) & '
+      ordered_scores_list.append((f1, title, scores))
+
+      ordered_scores_list.sort(key=lambda scores: scores[0], reverse=True)
+      for f1, title, scores in ordered_scores_list:
+        output_file.write(title + scores)
+      output_file.write(print_table_footer())
+
+
 
 def execute(file_prefix):
 
@@ -213,6 +329,6 @@ if __name__ == "__main__":
   if not os.path.exists('results'):
     os.makedirs('results')
 
-  execute('data/KatyPerry-CevxZvSJLk8')
-  execute('data/PewDiePie-gRyPjRrjS34')
-  execute('data/Psy-9bZkp7q19f0')
+  execute_ordered_by_data('data/KatyPerry-CevxZvSJLk8')
+  execute_ordered_by_data('data/PewDiePie-gRyPjRrjS34')
+  execute_ordered_by_data('data/Psy-9bZkp7q19f0')
