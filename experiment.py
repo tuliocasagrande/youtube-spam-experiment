@@ -78,12 +78,12 @@ def plot_figure(figure_name, scores_list):
       bar[i].set_color('r')
 
   plt.xticks(np.arange(0, 1.1, 0.1)) # guarantee an interval [0,1]
-  plt.savefig(os.path.join('figures', figure_name + '.png'), bbox_inches='tight')
-  plt.savefig(os.path.join('figures', figure_name + '.pdf'), bbox_inches='tight')
+  plt.savefig(os.path.join(_figures_path, figure_name + '.png'), bbox_inches='tight')
+  plt.savefig(os.path.join(_figures_path, figure_name + '.pdf'), bbox_inches='tight')
 
-def execute_ordered_by_data(file_prefix):
+def exp1(file_prefix):
 
-  with open(os.path.join('results', os.path.basename(file_prefix)+'.tex'), 'w') as output_file:
+  with open(os.path.join(_results_path, os.path.basename(file_prefix)+'.tex'), 'w') as output_file:
 
     video_title = os.path.basename(file_prefix).split('-')[0]
     suffix_list = ['050', '075', '100', '125', '150']
@@ -200,11 +200,14 @@ def execute_ordered_by_data(file_prefix):
       output_file.write(print_table_footer())
 
 if __name__ == "__main__":
-  if not os.path.exists('results'):
-    os.makedirs('results')
-  if not os.path.exists('figures'):
-    os.makedirs('figures')
+  _results_path = os.path.join('exp1', 'results')
+  _figures_path = os.path.join('exp1', 'figures')
 
-  execute_ordered_by_data(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
-  execute_ordered_by_data(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
-  execute_ordered_by_data(os.path.join('data', 'Psy-9bZkp7q19f0'))
+  if not os.path.exists(_results_path):
+    os.makedirs(_results_path)
+  if not os.path.exists(_figures_path):
+    os.makedirs(_figures_path)
+
+  exp1(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
+  exp1(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
+  exp1(os.path.join('data', 'Psy-9bZkp7q19f0'))
