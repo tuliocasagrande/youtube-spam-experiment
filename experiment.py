@@ -143,7 +143,7 @@ def exp1(file_prefix):
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'MultiNB & SVM (thresh 0.9)'
+      title = 'MultiNB & SVM (thr 0.9)'
       scores_list.append((f1, title, scores))
 
       # ================= BernoulliNB + LinearSVM 160/20/20 ==================
@@ -159,7 +159,7 @@ def exp1(file_prefix):
 
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, 0.9).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'BernoNB & SVM (thresh 0.9)'
+      title = 'BernoNB & SVM (thr 0.9)'
       scores_list.append((f1, title, scores))
 
       # ============== LabelPropagationRBF + LinearSVM 160/20/20 ===============
@@ -173,7 +173,7 @@ def exp1(file_prefix):
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, 0.9).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabProp & SVM (thresh 0.9)'
+      title = 'LabProp & SVM (thr 0.9)'
       scores_list.append((f1, title, scores))
 
       # =============== LabelSpreadingRBF + LinearSVM 160/20/20 ================
@@ -187,7 +187,7 @@ def exp1(file_prefix):
 
       y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, 0.9).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabSpread & SVM (thresh 0.9)'
+      title = 'LabSpread & SVM (thr 0.9)'
       scores_list.append((f1, title, scores))
 
       # ================================ SCORES ================================
@@ -273,14 +273,9 @@ def exp2(file_prefix):
                            ("multinomialnb", MultinomialNB())])
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
-      scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'MultiNB-{1} & SVM-{0}'.format(train, ss)
-      scores_list.append((f1, title, scores))
-
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'MultiNB-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      title = 'MultiNB-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
 
       # ======================= BernoulliNB + LinearSVM ========================
@@ -289,42 +284,27 @@ def exp2(file_prefix):
                            ("bernoullinb", BernoulliNB())])
       nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
-      scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'BernoNB-{1} & SVM-{0}'.format(train, ss)
-      scores_list.append((f1, title, scores))
-
       y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'BernoNB-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      title = 'BernoNB-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
 
       # =================== LabelPropagationRBF + LinearSVM ====================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
       lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
 
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
-      scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabProp-{1} & SVM-{0}'.format(train, ss)
-      scores_list.append((f1, title, scores))
-
       y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabProp-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      title = 'LabProp-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
 
       # ==================== LabelSpreadingRBF + LinearSVM =====================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
       lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
 
-      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
-      scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabSpread-{1} & SVM-{0}'.format(train, ss)
-      scores_list.append((f1, title, scores))
-
       y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
-      title = 'LabSpread-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      title = 'LabSpread-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
 
     # ================================ SCORES ================================
