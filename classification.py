@@ -7,8 +7,8 @@ class BaseClassification(object):
 
   def __init__(self, filename):
 
-    contents = []
-    classes = []
+    content_list = []
+    label_list = []
 
     # Reading and parsing CSV file
     with open(filename, 'rb') as csvfile:
@@ -16,11 +16,18 @@ class BaseClassification(object):
       reader.next() # Skiping the header
 
       for row in reader:
-        contents.append(row[3])
-        classes.append(int(row[4]))
+        content_list.append(row[3])
+        label_list.append(int(row[4]))
 
-    self.contents = np.asarray(contents)
-    self.classes = np.asarray(classes)
+    content_list = np.asarray(content_list)
+    label_list = np.asarray(label_list)
+
+    # To maintain the original ratio between the training and test sets
+    self.spam_list = content_list[label_list == 1]
+    self.ham_list = content_list[label_list == 0]
+
+    self.ones_list = label_list[label_list == 1]
+    self.zeros_list = label_list[label_list == 0]
 
 
 class SingleClassification(BaseClassification):
@@ -34,13 +41,14 @@ class SingleClassification(BaseClassification):
     super(SingleClassification, self).__init__(filename)
     self.clf = clf
 
-    train_index = int(len(self.classes) * train_percent)
+    train_index_spam = int(len(self.spam_list) * train_percent)
+    train_index_ham = int(len(self.ham_list) * train_percent)
 
-    self.X_train = self.contents[:train_index]
-    self.y_train = self.classes[:train_index]
+    self.X_train = np.concatenate([self.spam_list[ :train_index_spam], self.ham_list[ :train_index_ham]])
+    self.X_test = np.concatenate([self.spam_list[train_index_spam: ], self.ham_list[train_index_ham: ]])
 
-    self.X_test = self.contents[train_index:]
-    self.y_test = self.classes[train_index:]
+    self.y_train = np.concatenate([self.ones_list[ :train_index_spam], self.zeros_list[ :train_index_ham]])
+    self.y_test = np.concatenate([self.ones_list[train_index_spam: ], self.zeros_list[train_index_ham: ]])
 
   def classify(self):
     # Preparing bag of words
@@ -69,17 +77,20 @@ class DualClassification(BaseClassification):
     self.final_clf = final_clf
     self.threshold = threshold
 
-    train_index = int(len(self.classes) * train_percent)
-    ss_index = int(len(self.classes) * (train_percent+ss_percent))
+    train_index_spam = int(len(self.spam_list) * train_percent)
+    train_index_ham = int(len(self.ham_list) * train_percent)
+    ss_index_spam = int(len(self.spam_list) * (train_percent+ss_percent))
+    ss_index_ham = int(len(self.ham_list) * (train_percent+ss_percent))
 
-    self.X_train = self.contents[:train_index]
-    self.y_train = self.classes[:train_index]
+    self.X_train = np.concatenate([self.spam_list[ :train_index_spam], self.ham_list[ :train_index_ham]])
+    self.X_ss = np.concatenate([self.spam_list[train_index_spam:ss_index_spam],
+                                self.ham_list[train_index_ham:ss_index_ham]])
+    self.X_test = np.concatenate([self.spam_list[ss_index_spam: ], self.ham_list[ss_index_ham: ]])
 
-    self.X_ss = self.contents[train_index:ss_index]
-    self.y_ss = self.classes[train_index:ss_index]
-
-    self.X_test = self.contents[ss_index:]
-    self.y_test = self.classes[ss_index:]
+    self.y_train = np.concatenate([self.ones_list[ :train_index_spam], self.zeros_list[ :train_index_ham]])
+    self.y_ss = np.concatenate([self.ones_list[train_index_spam:ss_index_spam],
+                                self.zeros_list[train_index_ham:ss_index_ham]])
+    self.y_test = np.concatenate([self.ones_list[ss_index_spam: ], self.zeros_list[ss_index_ham: ]])
 
   def classify(self):
 
