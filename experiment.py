@@ -199,15 +199,159 @@ def exp1(file_prefix):
         output_file.write(title.replace('&','\&') + ' & ' + scores)
       output_file.write(print_table_footer())
 
+
+def exp2(file_prefix):
+
+  with open(os.path.join(_results_path, os.path.basename(file_prefix)+'.tex'), 'w') as output_file:
+
+    video_title = os.path.basename(file_prefix).split('-')[0]
+
+    # Parameters for grid search
+    range5 = [10.0 ** i for i in range(-5,5)]
+    range_percent = [10 * i for i in range(1,11)]
+    param_gamma = {'gamma': range5}
+    param_C = {'C': range5}
+    param_percentile = {'selectpercentile__percentile': range_percent}
+
+    scores_list = []
+    caption = 'Resultados do experimento 2 para o vídeo {0}.'.format(video_title)
+    label = 'tab:{0}'.format(video_title)
+    output_file.write(print_table_header(caption, label))
+    filename = file_prefix + '.original'
+
+    for each in [0.1, 0.2]:
+      # ============================ MultinomialNB =============================
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                         ("multinomialnb", MultinomialNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, nb_grid, train_percent=each).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultinomialNB-{0}'.format(each)
+      scores_list.append((f1, title, scores))
+
+      # ============================= BernoulliNB ==============================
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("bernoullinb", BernoulliNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, nb_grid, train_percent=each).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoulliNB-{0}'.format(each)
+      scores_list.append((f1, title, scores))
+
+      # ============================== LinearSVM ===============================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, svm_grid, train_percent=each).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'SVM-{0}'.format(each)
+      scores_list.append((f1, title, scores))
+
+      # =========================== LabelPropagation ===========================
+      lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, lab_prop_grid, train_percent=each).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabelPropagation-{0}'.format(each)
+      scores_list.append((f1, title, scores))
+
+      # ============================ LabelSpreading ============================
+      lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SingleClassification(filename, lab_spread_grid, train_percent=each).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabelSpreading-{0}'.format(each)
+      scores_list.append((f1, title, scores))
+
+    for train, ss in [(0.1, 0.1), (0.1, 0.2), (0.1, 0.3),
+                      (0.2, 0.2), (0.2, 0.4), (0.2, 0.6)]:
+
+      # ====================== MultinomialNB + LinearSVM =======================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("multinomialnb", MultinomialNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultiNB-{1} & SVM-{0}'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'MultiNB-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      # ======================= BernoulliNB + LinearSVM ========================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+                           ("bernoullinb", BernoulliNB())])
+      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoNB-{1} & SVM-{0}'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'BernoNB-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      # =================== LabelPropagationRBF + LinearSVM ====================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      lab_prop_grid = GridSearchCV(LabelPropagation(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabProp-{1} & SVM-{0}'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_prop_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabProp-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      # ==================== LabelSpreadingRBF + LinearSVM =====================
+      svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
+      lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, threshold=None, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabSpread-{1} & SVM-{0}'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+      y_true, y_pred = SemiSupervisedClassification(filename, lab_spread_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      scores, f1 = calculate_scores(y_true, y_pred)
+      title = 'LabSpread-{1} & SVM-{0} (thresh 0.9)'.format(train, ss)
+      scores_list.append((f1, title, scores))
+
+    # ================================ SCORES ================================
+    ordered_scores_list = sorted(scores_list, key=lambda scores: scores[0], reverse=True)
+
+    plot_figure('{0}'.format(video_title), ordered_scores_list)
+
+    for f1, title, scores in ordered_scores_list:
+      output_file.write(title.replace('&','\&') + ' & ' + scores)
+    output_file.write(print_table_footer())
+
 if __name__ == "__main__":
-  _results_path = os.path.join('exp1', 'results')
-  _figures_path = os.path.join('exp1', 'figures')
+  exp = 'exp2'
+
+  _results_path = os.path.join(exp, 'results')
+  _figures_path = os.path.join(exp, 'figures')
 
   if not os.path.exists(_results_path):
     os.makedirs(_results_path)
   if not os.path.exists(_figures_path):
     os.makedirs(_figures_path)
 
-  exp1(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
-  exp1(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
-  exp1(os.path.join('data', 'Psy-9bZkp7q19f0'))
+  if exp == 'exp1':
+    exp1(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
+    exp1(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
+    exp1(os.path.join('data', 'Psy-9bZkp7q19f0'))
+  else:
+    exp2(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
+    exp2(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
+    exp2(os.path.join('data', 'Psy-9bZkp7q19f0'))
