@@ -221,21 +221,21 @@ def exp2(file_prefix):
 
     for each in [0.1, 0.2]:
       # ============================ MultinomialNB =============================
-      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
                          ("multinomialnb", MultinomialNB())])
-      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+      # nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = SingleClassification(filename, nb_grid, train_percent=each).classify()
+      y_true, y_pred = SingleClassification(filename, pipeline, train_percent=each).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
       title = 'MultinomialNB-{0}'.format(each)
       scores_list.append((f1, title, scores))
 
       # ============================= BernoulliNB ==============================
-      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=10)),
                            ("bernoullinb", BernoulliNB())])
-      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+      # nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = SingleClassification(filename, nb_grid, train_percent=each).classify()
+      y_true, y_pred = SingleClassification(filename, pipeline, train_percent=each).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
       title = 'BernoulliNB-{0}'.format(each)
       scores_list.append((f1, title, scores))
@@ -269,22 +269,22 @@ def exp2(file_prefix):
 
       # ====================== MultinomialNB + LinearSVM =======================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
                            ("multinomialnb", MultinomialNB())])
-      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+      # nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      y_true, y_pred = DualClassification(filename, pipeline, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
       title = 'MultiNB-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
 
       # ======================= BernoulliNB + LinearSVM ========================
       svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2)),
+      pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=10)),
                            ("bernoullinb", BernoulliNB())])
-      nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
+      # nb_grid = GridSearchCV(pipeline, param_percentile, cv=10, scoring='f1')
 
-      y_true, y_pred = DualClassification(filename, nb_grid, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
+      y_true, y_pred = DualClassification(filename, pipeline, svm_grid, threshold=0.9, train_percent=train, ss_percent=ss).classify()
       scores, f1 = calculate_scores(y_true, y_pred)
       title = 'BernoNB-{1} & SVM-{0} (thr 0.9)'.format(train, ss)
       scores_list.append((f1, title, scores))
