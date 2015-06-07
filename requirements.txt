@@ -1,0 +1,13 @@
+beautifulsoup4==4.3.2
+configparser==3.3.0.post2
+joblib==0.8.4
+logutils==0.3.3
+mock==1.0.1
+numpy==1.9.2
+prettytable==0.7.2
+PyYAML==3.11
+scikit-learn==0.16.1
+scipy==0.15.1
+six==1.9.0
+skll==1.0.1
+wheel==0.24.0

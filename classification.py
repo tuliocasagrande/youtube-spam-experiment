@@ -101,6 +101,8 @@ class DualClassification(BaseClassification):
     vectorizer = CountVectorizer(min_df=1)
     bow_X = vectorizer.fit_transform(X)
 
+    # FIXME
+    # Maybe the LabelPropagation requires a bow_X.toarray()
     self.interm_clf.fit(bow_X, y)
     bow_X = vectorizer.transform(self.X_ss)
     self.y_pred_interm = self.interm_clf.predict(bow_X)
