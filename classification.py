@@ -55,12 +55,16 @@ class SingleClassification(BaseClassification):
   def classify(self):
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
-    bow_X = vectorizer.fit_transform(self.X_train)
+    bow_train = vectorizer.fit_transform(self.X_train)
+    bow_test = vectorizer.transform(self.X_test)
 
-    # Evaluating supervised training
-    self.clf.fit(bow_X, self.y_train)
-    bow_X = vectorizer.transform(self.X_test)
-    y_pred = self.clf.predict(bow_X)
+    # Fitting and predicting
+    try:
+      self.clf.fit(bow_train, self.y_train)
+      y_pred = self.clf.predict(bow_test)
+    except TypeError:
+      self.clf.fit(bow_train.toarray(), self.y_train)
+      y_pred = self.clf.predict(bow_test.toarray())
 
     return self.y_test, y_pred
 

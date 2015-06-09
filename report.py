@@ -34,7 +34,7 @@ class Report(object):
 
 
   def print_scores(self):
-    self.scores_list.sort(key=lambda scores: scores[1]['f1'], reverse=True)
+    self.scores_list.sort(key=lambda scores: scores[1]['mcc'], reverse=True)
 
     for clf_title, sc in self.scores_list:
       s = '{0} & '.format(clf_title.replace('&','\&'))
@@ -56,9 +56,9 @@ class Report(object):
 
     plt.figure()
     plt.title(figure_name)
-    plt.xlabel('F-medida')
+    plt.xlabel('MCC')
 
-    performance = [scores['f1'] for clf_title, scores in self.scores_list]
+    performance = [scores['mcc'] for clf_title, scores in self.scores_list]
     classifiers = tuple(clf_title for clf_title, scores in self.scores_list)
     y_pos = np.arange(len(classifiers))
     plt.yticks(y_pos, classifiers)

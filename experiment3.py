@@ -8,7 +8,9 @@ from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.feature_selection import chi2, SelectPercentile
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import BernoulliNB, MultinomialNB
+from sklearn.metrics import make_scorer, matthews_corrcoef
+from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.semi_supervised import LabelPropagation, LabelSpreading
 from sklearn.svm import LinearSVC, SVC
@@ -19,66 +21,32 @@ def exp3(video_title, filename, output_report):
 
   # Parameters for grid search
   range5 = [10.0 ** i for i in range(-5,5)]
-  range_percent = [10 * i for i in range(1,11)]
   param_gamma = {'gamma': range5}
   param_C = {'C': range5}
   param_C_gamma = {'C': range5, 'gamma': range5}
-  param_percentile = {'selectpercentile__percentile': range_percent}
+  param_nestimators = {'n_estimators': range(10,101,10)}
+  mcc = make_scorer(matthews_corrcoef)
 
   output_report.new_table(video_title)
 
-  # ========================= MultinomialNB 70%/30% ==========================
-  clf_title = 'MultinomialNB'
-  pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
-                       ("multinomialnb", MultinomialNB())])
-  y_true, y_pred = SingleClassification(filename, pipeline, train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
+  config = [('MultinomialNB', MultinomialNB()),
+            ('BernoulliNB', BernoulliNB()),
+            ('GaussianNB', GaussianNB()),
+            ('SVM Linear', GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)),
+            ('SVM RBF', GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
+            ('SVM Poly', GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
+            ('Logistic', GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
+            ('DecisionTree', DecisionTreeClassifier()),
+            ('RandomForest', GridSearchCV(RandomForestClassifier(), param_nestimators, cv=10, scoring=mcc)),
+            ('AdaBoost', AdaBoostClassifier()),
+            ('1-NN', KNeighborsClassifier(n_neighbors=1)),
+            ('3-NN', KNeighborsClassifier(n_neighbors=3)),
+            ('5-NN', KNeighborsClassifier(n_neighbors=5))]
 
-  # ========================== BernoulliNB 70%/30% ===========================
-  clf_title = 'BernoulliNB'
-  pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
-                       ("bernoullinb", BernoulliNB())])
-  y_true, y_pred = SingleClassification(filename, pipeline, train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
+  for clf_title, clf in config:
+    y_true, y_pred = SingleClassification(filename, clf, train_percent=0.7).classify()
+    output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
 
-  # =========================== LinearSVM 70%/30% ============================
-  clf_title = 'SVM Linear'
-  grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-  y_true, y_pred = SingleClassification(filename, grid, train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # =========================== SVM RBF 70%/30% ============================
-  clf_title = 'SVM RBF'
-  grid = GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring='f1')
-  y_true, y_pred = SingleClassification(filename, grid, train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # =========================== SVM Poly 70%/30% ============================
-  clf_title = 'SVM Poly'
-  grid = GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring='f1')
-  y_true, y_pred = SingleClassification(filename, grid, train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # ======================= LogisticRegression 70%/30% =======================
-  clf_title = 'Logistic'
-  y_true, y_pred = SingleClassification(filename, LogisticRegression(), train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # ======================= DecisionTree 70%/30% =======================
-  # scikit-learn uses an optimised version of the CART algorithm.
-  clf_title = 'DecisionTree'
-  y_true, y_pred = SingleClassification(filename, DecisionTreeClassifier(), train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # ======================= RandomForest 70%/30% =======================
-  clf_title = 'RandomForest'
-  y_true, y_pred = SingleClassification(filename, RandomForestClassifier(), train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
-
-  # ======================= AdaBoost 70%/30% =======================
-  clf_title = 'AdaBoost'
-  y_true, y_pred = SingleClassification(filename, AdaBoostClassifier(), train_percent=0.7).classify()
-  output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
 
   # ================================ SCORES ================================
   output_report.print_scores()
