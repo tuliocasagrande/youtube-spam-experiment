@@ -328,97 +328,8 @@ def exp2(file_prefix):
 
 
 
-def exp3(file_prefix):
-
-  with open(os.path.join(_results_path, os.path.basename(file_prefix)+'.tex'), 'w') as output_file:
-
-    video_title = os.path.basename(file_prefix)
-
-    # Parameters for grid search
-    range5 = [10.0 ** i for i in range(-5,5)]
-    range_percent = [10 * i for i in range(1,11)]
-    param_gamma = {'gamma': range5}
-    param_C = {'C': range5}
-    param_C_gamma = {'C': range5, 'gamma': range5}
-    param_percentile = {'selectpercentile__percentile': range_percent}
-
-    scores_list = []
-    caption = 'Resultados dos métodos de aprendizado de máquina para o vídeo {0}.'.format(video_title)
-    label = 'tab:{0}'.format(video_title)
-    output_file.write(print_table_header(caption, label))
-    filename = file_prefix + '.csv'
-
-    # ========================= MultinomialNB 70%/30% ==========================
-    title = 'MultinomialNB'
-    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
-                         ("multinomialnb", MultinomialNB())])
-    y_true, y_pred = SingleClassification(filename, pipeline, train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # ========================== BernoulliNB 70%/30% ===========================
-    title = 'BernoulliNB'
-    pipeline = Pipeline([("selectpercentile", SelectPercentile(chi2, percentile=70)),
-                         ("bernoullinb", BernoulliNB())])
-    y_true, y_pred = SingleClassification(filename, pipeline, train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # =========================== LinearSVM 70%/30% ============================
-    title = 'SVM Linear'
-    grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring='f1')
-    y_true, y_pred = SingleClassification(filename, grid, train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # =========================== SVM RBF 70%/30% ============================
-    title = 'SVM RBF'
-    grid = GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring='f1')
-    y_true, y_pred = SingleClassification(filename, grid, train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # ======================= LogisticRegression 70%/30% =======================
-    title = 'Logistic'
-    y_true, y_pred = SingleClassification(filename, LogisticRegression(), train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # ======================= DecisionTree 70%/30% =======================
-    # scikit-learn uses an optimised version of the CART algorithm.
-    title = 'DecisionTree'
-    y_true, y_pred = SingleClassification(filename, DecisionTreeClassifier(), train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # ======================= RandomForest 70%/30% =======================
-    title = 'RandomForest'
-    y_true, y_pred = SingleClassification(filename, RandomForestClassifier(), train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-    # ======================= AdaBoost 70%/30% =======================
-    title = 'AdaBoost'
-    y_true, y_pred = SingleClassification(filename, AdaBoostClassifier(), train_percent=0.7).classify()
-    scores, f1 = calculate_scores(y_true, y_pred)
-    scores_list.append((f1, title, scores))
-
-
-
-    # ================================ SCORES ================================
-    ordered_scores_list = sorted(scores_list, key=lambda scores: scores[0], reverse=True)
-
-    plot_figure('{0}'.format(video_title), ordered_scores_list)
-
-    for f1, title, scores in ordered_scores_list:
-      output_file.write(title.replace('&','\&') + ' & ' + scores)
-    output_file.write(print_table_footer())
-
-
-
-
 if __name__ == "__main__":
-  exp = 'exp3'
+  exp = 'exp2'
 
   _results_path = os.path.join(exp, 'results')
   _figures_path = os.path.join(exp, 'figures')
@@ -436,9 +347,3 @@ if __name__ == "__main__":
     exp2(os.path.join('data', 'KatyPerry-CevxZvSJLk8'))
     exp2(os.path.join('data', 'PewDiePie-gRyPjRrjS34'))
     exp2(os.path.join('data', 'Psy-9bZkp7q19f0'))
-  else:
-    exp3(os.path.join('data_new', '01-PSY-9bZkp7q19f0'))
-    exp3(os.path.join('data_new', '04-KatyPerry-CevxZvSJLk8'))
-    exp3(os.path.join('data_new', '07-LMFAO-KQ6zr6kCPj8'))
-    exp3(os.path.join('data_new', '08-Eminem-uelHwf8o7_U'))
-    exp3(os.path.join('data_new', '09-Shakira-pRpeEdMmmQ0'))

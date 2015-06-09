@@ -1,6 +1,8 @@
 import csv
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics  import accuracy_score, f1_score, matthews_corrcoef
+# from skll.metrics import kappa # Skll 1.0.1 (current version) doesnt support scikit-learn 0.16
 
 class BaseClassification(object):
   """ Base class for classification """
@@ -172,3 +174,32 @@ class SemiSupervisedClassification(DualClassification):
     y = np.concatenate([self.y_train, unlabeled_data])
 
     return X, y
+
+
+def calculate_scores(y_true, y_pred):
+
+  # Ensure that the lists are both the same length
+  assert(len(y_true) == len(y_pred))
+
+  scores = {}
+  scores['tp'] = tp = sum((y_true == y_pred) & (y_true == 1))
+  scores['tn'] = tn = sum((y_true == y_pred) & (y_true == 0))
+  scores['fp'] = fp = sum((y_true != y_pred) & (y_true == 0))
+  scores['fn'] = fn = sum((y_true != y_pred) & (y_true == 1))
+
+  scores['acc'] = accuracy_score(y_true, y_pred)
+  scores['f1'] = f1_score(y_true, y_pred)
+  scores['mcc'] = matthews_corrcoef(y_true, y_pred)
+  # scores['kap'] = kappa(y_true, y_pred)
+
+  try:
+    scores['sc'] = float(tp) / (tp + fn)
+  except ZeroDivisionError:
+    scores['sc'] = 0
+
+  try:
+    scores['bh'] = float(fp) / (fp + tn)
+  except ZeroDivisionError:
+    scores['bh'] = 0
+
+  return scores
