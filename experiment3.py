@@ -3,7 +3,7 @@
 
 from classification import calculate_scores, SingleClassification, DualClassification, SemiSupervisedClassification
 import os
-from report import Report
+import report
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.feature_selection import chi2, SelectPercentile
 from sklearn.grid_search import GridSearchCV
@@ -17,7 +17,7 @@ from sklearn.svm import LinearSVC, SVC
 from sklearn.tree import DecisionTreeClassifier
 
 
-def exp3(video_title, filename, output_report):
+def exp3(filename):
 
   # Parameters for grid search
   range5 = [10.0 ** i for i in range(-5,5)]
@@ -27,7 +27,7 @@ def exp3(video_title, filename, output_report):
   param_nestimators = {'n_estimators': range(10,101,10)}
   mcc = make_scorer(matthews_corrcoef)
 
-  output_report.new_table(video_title)
+  scores_list = []
 
   config = [('MultinomialNB', MultinomialNB()),
             ('BernoulliNB', BernoulliNB()),
@@ -45,13 +45,10 @@ def exp3(video_title, filename, output_report):
 
   for clf_title, clf in config:
     y_true, y_pred = SingleClassification(filename, clf, train_percent=0.7).classify()
-    output_report.append_scores(clf_title, calculate_scores(y_true, y_pred))
+    scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
 
-
-  # ================================ SCORES ================================
-  output_report.print_scores()
-  output_report.print_table_footer()
-  output_report.plot_figure()
+  scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']), reverse=True)
+  return scores_list
 
 
 if __name__ == "__main__":
@@ -69,6 +66,15 @@ if __name__ == "__main__":
                '08-Eminem-uelHwf8o7_U',
                '09-Shakira-pRpeEdMmmQ0']
 
-  for f in file_list:
-    with open(os.path.join(results_path, f + '.tex'), 'w') as output_file:
-      exp3(f, os.path.join('data_new', f+'.csv'), Report(output_file, figures_path))
+  csv_filename = os.path.join(results_path, 'results_mcc.csv')
+  report.csv_init_header(csv_filename)
+
+  for video_title in file_list:
+    scores_list = exp3(os.path.join('data_new', video_title + '.csv'))
+
+    tex_filename = os.path.join(results_path, video_title + '.tex')
+    figurename = os.path.join(figures_path, video_title)
+
+    report.tex_report(tex_filename, video_title, scores_list)
+    report.csv_report(csv_filename, video_title, scores_list)
+    report.plot_figure(figurename, video_title, scores_list)
