@@ -43,8 +43,9 @@ def exp3(filename):
             ('3-NN', KNeighborsClassifier(n_neighbors=3)),
             ('5-NN', KNeighborsClassifier(n_neighbors=5))]
 
+  single_classification = SingleClassification(filename, train_percent=0.7)
   for clf_title, clf in config:
-    y_true, y_pred = SingleClassification(filename, clf, train_percent=0.7).classify()
+    y_true, y_pred = single_classification.classify(clf)
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
 
   scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']), reverse=True)

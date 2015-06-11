@@ -39,9 +39,8 @@ class SingleClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, clf, train_percent=0.8):
+  def __init__(self, filename, train_percent=0.8):
     super(SingleClassification, self).__init__(filename)
-    self.clf = clf
 
     train_index_spam = int(len(self.spam_list) * train_percent)
     train_index_ham = int(len(self.ham_list) * train_percent)
@@ -52,19 +51,20 @@ class SingleClassification(BaseClassification):
     self.y_train = np.concatenate([self.ones_list[ :train_index_spam], self.zeros_list[ :train_index_ham]])
     self.y_test = np.concatenate([self.ones_list[train_index_spam: ], self.zeros_list[train_index_ham: ]])
 
-  def classify(self):
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
-    bow_train = vectorizer.fit_transform(self.X_train)
-    bow_test = vectorizer.transform(self.X_test)
+    self.bow_train = vectorizer.fit_transform(self.X_train)
+    self.bow_test = vectorizer.transform(self.X_test)
+
+  def classify(self, clf):
 
     # Fitting and predicting
     try:
-      self.clf.fit(bow_train, self.y_train)
-      y_pred = self.clf.predict(bow_test)
+      clf.fit(self.bow_train, self.y_train)
+      y_pred = clf.predict(self.bow_test)
     except TypeError:
-      self.clf.fit(bow_train.toarray(), self.y_train)
-      y_pred = self.clf.predict(bow_test.toarray())
+      clf.fit(self.bow_train.toarray(), self.y_train)
+      y_pred = clf.predict(self.bow_test.toarray())
 
     return self.y_test, y_pred
 
