@@ -36,9 +36,9 @@ def exp3(filename):
             ('SVM RBF', GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
             ('SVM Poly', GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
             ('Logistic', GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
-            ('DecisionTree', DecisionTreeClassifier()),
-            ('RandomForest', GridSearchCV(RandomForestClassifier(), param_nestimators, cv=10, scoring=mcc)),
-            ('AdaBoost', AdaBoostClassifier()),
+            ('DecisionTree', DecisionTreeClassifier(criterion='entropy')),
+            ('RandomForest', GridSearchCV(RandomForestClassifier(criterion='entropy'), param_nestimators, cv=10, scoring=mcc)),
+            ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(criterion='entropy'))),
             ('1-NN', KNeighborsClassifier(n_neighbors=1)),
             ('3-NN', KNeighborsClassifier(n_neighbors=3)),
             ('5-NN', KNeighborsClassifier(n_neighbors=5))]
