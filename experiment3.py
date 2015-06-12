@@ -24,7 +24,8 @@ def exp3(filename):
   param_gamma = {'gamma': range5}
   param_C = {'C': range5}
   param_C_gamma = {'C': range5, 'gamma': range5}
-  param_nestimators = {'n_estimators': range(10,101,10)}
+  param_criterion = {'criterion': ['gini', 'entropy']}
+  param_crit_nestim = {'criterion': ['gini', 'entropy'], 'n_estimators': range(10,101,10)}
   mcc = make_scorer(matthews_corrcoef)
 
   scores_list = []
@@ -36,9 +37,9 @@ def exp3(filename):
             ('SVM RBF', GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
             ('SVM Poly', GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
             ('Logistic', GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
-            ('DecisionTree', DecisionTreeClassifier(criterion='entropy')),
-            ('RandomForest', GridSearchCV(RandomForestClassifier(criterion='entropy'), param_nestimators, cv=10, scoring=mcc)),
-            ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(criterion='entropy'))),
+            ('DecisionTree', GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
+            ('RandomForest', GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
+            ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(random_state=0), random_state=0)),
             ('1-NN', KNeighborsClassifier(n_neighbors=1)),
             ('3-NN', KNeighborsClassifier(n_neighbors=3)),
             ('5-NN', KNeighborsClassifier(n_neighbors=5))]
