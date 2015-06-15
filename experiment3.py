@@ -21,6 +21,7 @@ def exp3(filename):
 
   # Parameters for grid search
   range5 = [10.0 ** i for i in range(-5,5)]
+  param_alpha = {'alpha': range5}
   param_gamma = {'gamma': range5}
   param_C = {'C': range5}
   param_C_gamma = {'C': range5, 'gamma': range5}
@@ -30,8 +31,8 @@ def exp3(filename):
 
   scores_list = []
 
-  config = [('MultinomialNB', MultinomialNB()),
-            ('BernoulliNB', BernoulliNB()),
+  config = [('MultinomialNB', GridSearchCV(MultinomialNB(), param_alpha, cv=10, scoring=mcc)),
+            ('BernoulliNB', GridSearchCV(BernoulliNB(), param_alpha, cv=10, scoring=mcc)),
             ('GaussianNB', GaussianNB()),
             ('SVM Linear', GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)),
             ('SVM RBF', GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
@@ -48,9 +49,20 @@ def exp3(filename):
   for clf_title, clf in config:
     y_true, y_pred = single_classification.classify(clf)
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
+    print_best_params(clf)
 
   scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']), reverse=True)
   return scores_list
+
+
+def print_best_params(clf):
+  if type(clf) != GridSearchCV:
+    print clf.__class__.__name__
+  else:
+    print clf.best_estimator_.__class__.__name__
+    best_parameters = clf.best_estimator_.get_params()
+    for key in clf.param_grid:
+      print '\t{0}: {1}'.format(key, best_parameters[key])
 
 
 if __name__ == "__main__":
@@ -72,6 +84,9 @@ if __name__ == "__main__":
   report.csv_init_header(csv_filename)
 
   for video_title in file_list:
+    print '\n###############'
+    print video_title + '\n'
+
     scores_list = exp3(os.path.join('data_new', video_title + '.csv'))
 
     tex_filename = os.path.join(results_path, video_title + '.tex')

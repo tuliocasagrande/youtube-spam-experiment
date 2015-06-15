@@ -1,0 +1,140 @@
+
+###############
+01-PSY-9bZkp7q19f0
+
+MultinomialNB
+	alpha: 1.0
+BernoulliNB
+	alpha: 0.1
+GaussianNB
+LinearSVC
+	C: 0.01
+SVC
+	C: 100.0
+	gamma: 0.001
+SVC
+	C: 0.0001
+	gamma: 10.0
+LogisticRegression
+	C: 100.0
+DecisionTreeClassifier
+	criterion: entropy
+RandomForestClassifier
+	n_estimators: 40
+	criterion: gini
+AdaBoostClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+
+###############
+04-KatyPerry-CevxZvSJLk8
+
+MultinomialNB
+	alpha: 1.0
+BernoulliNB
+	alpha: 0.1
+GaussianNB
+LinearSVC
+	C: 0.1
+SVC
+	C: 10000.0
+	gamma: 0.0001
+SVC
+	C: 0.0001
+	gamma: 10.0
+LogisticRegression
+	C: 10.0
+DecisionTreeClassifier
+	criterion: entropy
+RandomForestClassifier
+	n_estimators: 90
+	criterion: gini
+AdaBoostClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+
+###############
+07-LMFAO-KQ6zr6kCPj8
+
+MultinomialNB
+	alpha: 0.1
+BernoulliNB
+	alpha: 0.01
+GaussianNB
+LinearSVC
+	C: 1.0
+SVC
+	C: 100.0
+	gamma: 0.001
+SVC
+	C: 0.001
+	gamma: 10.0
+LogisticRegression
+	C: 1.0
+DecisionTreeClassifier
+	criterion: entropy
+RandomForestClassifier
+	n_estimators: 30
+	criterion: entropy
+AdaBoostClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+
+###############
+08-Eminem-uelHwf8o7_U
+
+MultinomialNB
+	alpha: 0.1
+BernoulliNB
+	alpha: 0.001
+GaussianNB
+LinearSVC
+	C: 0.1
+SVC
+	C: 1000.0
+	gamma: 0.0001
+SVC
+	C: 1e-05
+	gamma: 100.0
+LogisticRegression
+	C: 1.0
+DecisionTreeClassifier
+	criterion: entropy
+RandomForestClassifier
+	n_estimators: 100
+	criterion: entropy
+AdaBoostClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+
+###############
+09-Shakira-pRpeEdMmmQ0
+
+MultinomialNB
+	alpha: 0.01
+BernoulliNB
+	alpha: 1e-05
+GaussianNB
+LinearSVC
+	C: 1.0
+SVC
+	C: 1000.0
+	gamma: 0.001
+SVC
+	C: 0.0001
+	gamma: 10.0
+LogisticRegression
+	C: 1000.0
+DecisionTreeClassifier
+	criterion: gini
+RandomForestClassifier
+	n_estimators: 80
+	criterion: entropy
+AdaBoostClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
