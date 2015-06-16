@@ -55,7 +55,7 @@ def plot_figure(figurename, video_title, scores_list):
 
 CLF_LIST = ['MultinomialNB', 'BernoulliNB', 'GaussianNB', 'SVM Linear',
             'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree', 'RandomForest',
-            'AdaBoost', '1-NN', '3-NN', '5-NN']
+            '1-NN', '3-NN', '5-NN']
 
 def csv_init_header(filename):
   with open(filename, 'w') as f:

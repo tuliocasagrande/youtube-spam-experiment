@@ -22,7 +22,6 @@ DecisionTreeClassifier
 RandomForestClassifier
 	n_estimators: 40
 	criterion: gini
-AdaBoostClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
@@ -50,7 +49,6 @@ DecisionTreeClassifier
 RandomForestClassifier
 	n_estimators: 90
 	criterion: gini
-AdaBoostClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
@@ -78,7 +76,6 @@ DecisionTreeClassifier
 RandomForestClassifier
 	n_estimators: 30
 	criterion: entropy
-AdaBoostClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
@@ -106,7 +103,6 @@ DecisionTreeClassifier
 RandomForestClassifier
 	n_estimators: 100
 	criterion: entropy
-AdaBoostClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
@@ -134,7 +130,6 @@ DecisionTreeClassifier
 RandomForestClassifier
 	n_estimators: 80
 	criterion: entropy
-AdaBoostClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier

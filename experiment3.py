@@ -40,7 +40,6 @@ def exp3(filename):
             ('Logistic', GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
             ('DecisionTree', GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
             ('RandomForest', GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
-            ('AdaBoost', AdaBoostClassifier(DecisionTreeClassifier(random_state=0), random_state=0)),
             ('1-NN', KNeighborsClassifier(n_neighbors=1)),
             ('3-NN', KNeighborsClassifier(n_neighbors=3)),
             ('5-NN', KNeighborsClassifier(n_neighbors=5))]
