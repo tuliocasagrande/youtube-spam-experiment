@@ -1,0 +1,22 @@
+\begin{table}[!htb]
+\centering
+\caption{Resultados dos métodos de aprendizado de máquina para o vídeo 08-rotulada-tratada-embaralhada.}
+\label{tab:08-rotulada-tratada-embaralhada}
+\begin{tabular}{r|c|c|c|c|c|c|c|c|c|c}
+\hline\hline
+Classifier & Acc (\%) & SC (\%) & BH (\%) & F-medida & MCC & TP & TN & FP & FN \\ \hline
+Logistic & 96.30 & 92.86 & 0.00 & 0.963 & 0.929 & 65 & 65 & 0 & 5 \\ 
+SVM Linear & 95.56 & 91.43 & 0.00 & 0.955 & 0.915 & 64 & 65 & 0 & 6 \\ 
+SVM RBF & 95.56 & 91.43 & 0.00 & 0.955 & 0.915 & 64 & 65 & 0 & 6 \\ 
+RandomForest & 94.07 & 90.00 & 1.54 & 0.940 & 0.885 & 63 & 64 & 1 & 7 \\ 
+DecisionTree & 94.07 & 91.43 & 3.08 & 0.941 & 0.883 & 64 & 63 & 2 & 6 \\ 
+BernoulliNB & 92.59 & 91.43 & 6.15 & 0.928 & 0.852 & 64 & 61 & 4 & 6 \\ 
+MultinomialNB & 91.85 & 92.86 & 9.23 & 0.922 & 0.837 & 65 & 59 & 6 & 5 \\ 
+1-NN & 88.89 & 78.57 & 0.00 & 0.880 & 0.799 & 55 & 65 & 0 & 15 \\ 
+SVM Poly & 88.15 & 78.57 & 1.54 & 0.873 & 0.781 & 55 & 64 & 1 & 15 \\ 
+GaussianNB & 87.41 & 94.29 & 20.00 & 0.886 & 0.753 & 66 & 52 & 13 & 4 \\ 
+3-NN & 85.93 & 72.86 & 0.00 & 0.843 & 0.751 & 51 & 65 & 0 & 19 \\ 
+5-NN & 83.70 & 68.57 & 0.00 & 0.814 & 0.716 & 48 & 65 & 0 & 22 \\ 
+\hline\hline
+\end{tabular}
+\end{table}

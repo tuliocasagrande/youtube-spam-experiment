@@ -5,18 +5,45 @@
 MultinomialNB
 	alpha: 1.0
 BernoulliNB
-	alpha: 0.1
+	alpha: 1.0
 GaussianNB
 LinearSVC
-	C: 0.01
+	C: 0.1
 SVC
-	C: 100.0
-	gamma: 0.001
+	C: 1.0
+	gamma: 0.01
+SVC
+	C: 1e-05
+	gamma: 10.0
+LogisticRegression
+	C: 10.0
+DecisionTreeClassifier
+	criterion: entropy
+RandomForestClassifier
+	n_estimators: 80
+	criterion: gini
+KNeighborsClassifier
+KNeighborsClassifier
+KNeighborsClassifier
+
+###############
+04-KatyPerry-CevxZvSJLk8
+
+MultinomialNB
+	alpha: 10.0
+BernoulliNB
+	alpha: 10.0
+GaussianNB
+LinearSVC
+	C: 0.1
+SVC
+	C: 1000.0
+	gamma: 0.01
 SVC
 	C: 0.0001
 	gamma: 10.0
 LogisticRegression
-	C: 100.0
+	C: 10000.0
 DecisionTreeClassifier
 	criterion: entropy
 RandomForestClassifier
@@ -27,34 +54,34 @@ KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-04-KatyPerry-CevxZvSJLk8
+07-LMFAO-KQ6zr6kCPj8
 
 MultinomialNB
-	alpha: 1.0
+	alpha: 1e-05
 BernoulliNB
-	alpha: 0.1
+	alpha: 0.01
 GaussianNB
 LinearSVC
-	C: 0.1
+	C: 1.0
 SVC
-	C: 10000.0
-	gamma: 0.0001
+	C: 1000.0
+	gamma: 0.001
 SVC
-	C: 0.0001
+	C: 0.001
 	gamma: 10.0
 LogisticRegression
-	C: 10.0
+	C: 100.0
 DecisionTreeClassifier
 	criterion: entropy
 RandomForestClassifier
 	n_estimators: 90
-	criterion: gini
+	criterion: entropy
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-07-LMFAO-KQ6zr6kCPj8
+08-rotulada-tratada-embaralhada
 
 MultinomialNB
 	alpha: 0.1
@@ -64,44 +91,17 @@ GaussianNB
 LinearSVC
 	C: 1.0
 SVC
-	C: 100.0
-	gamma: 0.001
+	C: 10000.0
+	gamma: 0.0001
 SVC
-	C: 0.001
+	C: 1e-05
 	gamma: 10.0
 LogisticRegression
 	C: 1.0
 DecisionTreeClassifier
-	criterion: entropy
+	criterion: gini
 RandomForestClassifier
-	n_estimators: 30
-	criterion: entropy
-KNeighborsClassifier
-KNeighborsClassifier
-KNeighborsClassifier
-
-###############
-08-Eminem-uelHwf8o7_U
-
-MultinomialNB
-	alpha: 0.1
-BernoulliNB
-	alpha: 0.001
-GaussianNB
-LinearSVC
-	C: 0.1
-SVC
-	C: 1000.0
-	gamma: 0.0001
-SVC
-	C: 1e-05
-	gamma: 100.0
-LogisticRegression
-	C: 1.0
-DecisionTreeClassifier
-	criterion: entropy
-RandomForestClassifier
-	n_estimators: 100
+	n_estimators: 60
 	criterion: entropy
 KNeighborsClassifier
 KNeighborsClassifier
@@ -118,17 +118,17 @@ GaussianNB
 LinearSVC
 	C: 1.0
 SVC
-	C: 1000.0
-	gamma: 0.001
+	C: 100.0
+	gamma: 0.01
 SVC
 	C: 0.0001
 	gamma: 10.0
 LogisticRegression
-	C: 1000.0
+	C: 100.0
 DecisionTreeClassifier
 	criterion: gini
 RandomForestClassifier
-	n_estimators: 80
+	n_estimators: 30
 	criterion: entropy
 KNeighborsClassifier
 KNeighborsClassifier

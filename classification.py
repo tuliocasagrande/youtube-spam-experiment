@@ -21,15 +21,12 @@ class BaseClassification(object):
         content_list.append(row[3])
         label_list.append(int(row[4]))
 
-    content_list = np.asarray(content_list)
-    label_list = np.asarray(label_list)
+    self.X = np.asarray(content_list)
+    self.y = np.asarray(label_list)
 
-    # To maintain the original ratio between the training and test sets
-    self.spam_list = content_list[label_list == 1]
-    self.ham_list = content_list[label_list == 0]
+    # Ensure that the lists are both the same length
+    assert(len(self.X) == len(self.y))
 
-    self.ones_list = label_list[label_list == 1]
-    self.zeros_list = label_list[label_list == 0]
 
 
 class SingleClassification(BaseClassification):
@@ -42,14 +39,17 @@ class SingleClassification(BaseClassification):
   def __init__(self, filename, train_percent=0.8):
     super(SingleClassification, self).__init__(filename)
 
-    train_index_spam = int(len(self.spam_list) * train_percent)
-    train_index_ham = int(len(self.ham_list) * train_percent)
+    train_index = int(len(self.X) * train_percent)
 
-    self.X_train = np.concatenate([self.spam_list[ :train_index_spam], self.ham_list[ :train_index_ham]])
-    self.X_test = np.concatenate([self.spam_list[train_index_spam: ], self.ham_list[train_index_ham: ]])
+    self.X_train = self.X[ :train_index]
+    self.X_test = self.X[train_index: ]
 
-    self.y_train = np.concatenate([self.ones_list[ :train_index_spam], self.zeros_list[ :train_index_ham]])
-    self.y_test = np.concatenate([self.ones_list[train_index_spam: ], self.zeros_list[train_index_ham: ]])
+    self.y_train = self.y[ :train_index]
+    self.y_test = self.y[train_index: ]
+
+    # Ensure that the lists are both the same length
+    assert(len(self.X) == len(self.X_train) + len(self.X_test))
+    assert(len(self.y) == len(self.y_train) + len(self.y_test))
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
