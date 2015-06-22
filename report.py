@@ -35,7 +35,7 @@ def tex_report(filename, video_title, scores_list):
 def plot_figure(figurename, video_title, scores_list):
   plt.figure()
   plt.title(video_title)
-  plt.xlabel('F-medida')
+  plt.xlabel('MCC')
 
   performance = [scores['mcc'] for clf_title, scores in scores_list]
   classifiers = tuple(clf_title for clf_title, scores in scores_list)

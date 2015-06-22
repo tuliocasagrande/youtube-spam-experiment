@@ -86,23 +86,23 @@ KNeighborsClassifier
 MultinomialNB
 	alpha: 0.1
 BernoulliNB
-	alpha: 0.01
+	alpha: 0.001
 GaussianNB
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVC
-	C: 10000.0
+	C: 1000.0
 	gamma: 0.0001
 SVC
 	C: 1e-05
-	gamma: 10.0
+	gamma: 100.0
 LogisticRegression
-	C: 1.0
+	C: 100.0
 DecisionTreeClassifier
 	criterion: gini
 RandomForestClassifier
-	n_estimators: 60
-	criterion: entropy
+	n_estimators: 30
+	criterion: gini
 KNeighborsClassifier
 KNeighborsClassifier
 KNeighborsClassifier
