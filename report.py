@@ -32,7 +32,7 @@ def tex_report(filename, video_title, scores_list):
     output_file.write(s)
 
 
-def plot_figure(figurename, video_title, scores_list):
+def plot_mcc_bars(figurename, video_title, scores_list):
   plt.figure()
   plt.title(video_title)
   plt.xlabel('MCC')
@@ -53,22 +53,22 @@ def plot_figure(figurename, video_title, scores_list):
   plt.savefig(figurename + '.pdf', bbox_inches='tight')
 
 
-CLF_LIST = ['MultinomialNB', 'BernoulliNB', 'GaussianNB', 'SVM Linear',
-            'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree', 'RandomForest',
-            '1-NN', '3-NN', '5-NN']
+class CsvReport:
 
-def csv_init_header(filename):
-  with open(filename, 'w') as f:
-    csv.writer(f).writerow(['Video'] + CLF_LIST)
+  def __init__(self, filename, clf_list):
+    self.filename = filename
+    self.clf_list = clf_list
+    with open(filename, 'w') as f:
+      csv.writer(f).writerow(['Video'] + clf_list)
 
-def csv_report(filename, video_title, scores_list):
-  scores_dict = {}
-  for clf_title, sc in scores_list:
-    scores_dict[clf_title] = sc
+  def report(self, video_title, scores_list):
+    scores_dict = {}
+    for clf_title, sc in scores_list:
+      scores_dict[clf_title] = sc
 
-  row = [video_title]
-  for clf in CLF_LIST:
-    row.append(scores_dict[clf]['mcc'])
+    row = [video_title]
+    for clf in self.clf_list:
+      row.append(scores_dict[clf]['mcc'])
 
-  with open(filename, 'a') as f:
-    csv.writer(f).writerow(row)
+    with open(self.filename, 'a') as f:
+      csv.writer(f).writerow(row)

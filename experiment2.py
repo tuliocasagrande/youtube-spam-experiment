@@ -17,7 +17,7 @@ from sklearn.svm import LinearSVC, SVC
 from sklearn.tree import DecisionTreeClassifier
 
 
-def exp3(filename):
+def exp2(filename):
 
   # Parameters for grid search
   range5 = [10.0 ** i for i in range(-5,5)]
@@ -31,24 +31,22 @@ def exp3(filename):
 
   scores_list = []
 
-  config = [('MultinomialNB', GridSearchCV(MultinomialNB(), param_alpha, cv=10, scoring=mcc)),
-            ('BernoulliNB', GridSearchCV(BernoulliNB(), param_alpha, cv=10, scoring=mcc)),
-            ('GaussianNB', GaussianNB()),
-            ('SVM Linear', GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)),
-            ('SVM RBF', GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
-            ('SVM Poly', GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
-            ('Logistic', GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
-            ('DecisionTree', GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
-            ('RandomForest', GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
-            ('1-NN', KNeighborsClassifier(n_neighbors=1)),
-            ('3-NN', KNeighborsClassifier(n_neighbors=3)),
-            ('5-NN', KNeighborsClassifier(n_neighbors=5))]
+  svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)
+  lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+  config = [#('SVM Linear 0.1 + SS 0.6', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.1, ss_percent=0.6)),
+            #('SVM Linear 0.2 + SS 0.5', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.2, ss_percent=0.5)),
+            ('SVM Linear 0.3 + SS 0.4', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.3, ss_percent=0.4)),
+            ('SVM Linear 0.4 + SS 0.3', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.4, ss_percent=0.3)),
+            ('SVM Linear 0.5 + SS 0.2', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.5, ss_percent=0.2)),
+            ('SVM Linear 0.6 + SS 0.1', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.6, ss_percent=0.1))]
 
-  single_classification = SingleClassification(filename, train_percent=0.7)
   for clf_title, clf in config:
-    y_true, y_pred = single_classification.classify(clf)
+    y_true, y_pred = clf.classify(lab_spread_grid, svm_grid);
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
-    print_best_params(clf)
+    print clf_title
+    interm_clf, final_clf = clf.get_clfs()
+    print_best_params(interm_clf)
+    print_best_params(final_clf)
 
   scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']), reverse=True)
   return scores_list
@@ -65,8 +63,8 @@ def print_best_params(clf):
 
 
 if __name__ == "__main__":
-  results_path = os.path.join('exp3', 'results')
-  figures_path = os.path.join('exp3', 'figures')
+  results_path = os.path.join('exp2', 'results')
+  figures_path = os.path.join('exp2', 'figures')
 
   if not os.path.exists(results_path):
     os.makedirs(results_path)
@@ -81,17 +79,21 @@ if __name__ == "__main__":
                '09-Shakira-pRpeEdMmmQ0']
 
   csv_filename = os.path.join(results_path, 'results_mcc.csv')
-  report.csv_init_header(csv_filename)
+  clf_list = [#'SVM Linear 0.1 + SS 0.6',
+              #'SVM Linear 0.2 + SS 0.5',
+              'SVM Linear 0.3 + SS 0.4', 'SVM Linear 0.4 + SS 0.3',
+              'SVM Linear 0.5 + SS 0.2', 'SVM Linear 0.6 + SS 0.1']
+  csv_report = report.CsvReport(csv_filename, clf_list)
 
   for video_title in file_list:
     print '\n###############'
     print video_title + '\n'
 
-    scores_list = exp3(os.path.join('data_new', video_title + '.csv'))
+    scores_list = exp2(os.path.join('data_new', video_title + '.csv'))
 
     tex_filename = os.path.join(results_path, video_title + '.tex')
     figurename = os.path.join(figures_path, video_title)
 
     report.tex_report(tex_filename, video_title, scores_list)
-    report.csv_report(csv_filename, video_title, scores_list)
-    report.plot_figure(figurename, video_title, scores_list)
+    report.plot_mcc_bars(figurename, video_title, scores_list)
+    csv_report.report(video_title, scores_list)

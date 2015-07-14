@@ -47,7 +47,7 @@ class SingleClassification(BaseClassification):
     self.y_train = self.y[ :train_index]
     self.y_test = self.y[train_index: ]
 
-    # Ensure that the lists are both the same length
+    # Ensure the lists have the same length
     assert(len(self.X) == len(self.X_train) + len(self.X_test))
     assert(len(self.y) == len(self.y_train) + len(self.y_test))
 
@@ -77,57 +77,64 @@ class DualClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, interm_clf, final_clf, threshold=None, train_percent=0.8, ss_percent=0.1):
+  def __init__(self, filename, threshold=None, train_percent=0.2, ss_percent=0.4):
     super(DualClassification, self).__init__(filename)
-    self.interm_clf = interm_clf
-    self.final_clf = final_clf
     self.threshold = threshold
 
-    train_index_spam = int(len(self.spam_list) * train_percent)
-    train_index_ham = int(len(self.ham_list) * train_percent)
-    ss_index_spam = int(len(self.spam_list) * (train_percent+ss_percent))
-    ss_index_ham = int(len(self.ham_list) * (train_percent+ss_percent))
+    train_index = int(len(self.X) * train_percent)
+    ss_index = int(len(self.X) * (train_percent+ss_percent))
 
-    self.X_train = np.concatenate([self.spam_list[ :train_index_spam], self.ham_list[ :train_index_ham]])
-    self.X_ss = np.concatenate([self.spam_list[train_index_spam:ss_index_spam],
-                                self.ham_list[train_index_ham:ss_index_ham]])
-    self.X_test = np.concatenate([self.spam_list[ss_index_spam: ], self.ham_list[ss_index_ham: ]])
+    self.X_train = self.X[ :train_index]
+    self.X_ss = self.X[train_index:ss_index]
+    self.X_test = self.X[ss_index: ]
 
-    self.y_train = np.concatenate([self.ones_list[ :train_index_spam], self.zeros_list[ :train_index_ham]])
-    self.y_ss = np.concatenate([self.ones_list[train_index_spam:ss_index_spam],
-                                self.zeros_list[train_index_ham:ss_index_ham]])
-    self.y_test = np.concatenate([self.ones_list[ss_index_spam: ], self.zeros_list[ss_index_ham: ]])
+    self.y_train = self.y[ :train_index]
+    self.y_ss = self.y[train_index:ss_index]
+    self.y_test = self.y[ss_index: ]
 
-  def classify(self):
+    # Ensure the lists have the same length
+    assert(len(self.X) == len(self.X_train) + len(self.X_ss) + len(self.X_test))
+    assert(len(self.y) == len(self.y_train) + len(self.y_ss) + len(self.y_test))
+
+  def get_clfs(self):
+    return self.interm_clf, self.final_clf
+
+  def classify(self, interm_clf, final_clf):
+
+    self.interm_clf = interm_clf
+    self.final_clf = final_clf
 
     # ======================== Intermediate classifier =========================
-    X, y = self.prepare_intermediate()
+    X_train, y_train = self.prepare_intermediate()
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
-    bow_X = vectorizer.fit_transform(X)
+    bow_train = vectorizer.fit_transform(X_train)
+    bow_ss = vectorizer.transform(self.X_ss)
 
-    # FIXME
-    # Maybe the LabelPropagation requires a bow_X.toarray()
-    self.interm_clf.fit(bow_X, y)
-    bow_X = vectorizer.transform(self.X_ss)
-    self.y_pred_interm = self.interm_clf.predict(bow_X)
+    try:
+      interm_clf.fit(bow_train, y_train)
+      self.y_pred_interm = interm_clf.predict(bow_ss)
+      y_proba_interm = interm_clf.predict_proba(bow_ss)
+    except TypeError:
+      interm_clf.fit(bow_train.toarray(), y_train)
+      self.y_pred_interm = interm_clf.predict(bow_ss.toarray())
+      y_proba_interm = interm_clf.predict_proba(bow_ss.toarray())
 
     if self.threshold:
-      y_proba_interm = self.interm_clf.predict_proba(bow_X)
-      above_threshold = [each[self.y_pred_interm[i]] >= self.threshold for i, each in enumerate(y_proba_interm)]
+      above_threshold = [proba[self.y_pred_interm[i]] >= self.threshold for i, proba in enumerate(y_proba_interm)]
       self.above_threshold = np.asarray(above_threshold)
 
     # ============================ Final classifier ============================
-    X, y = self.prepare_final()
+    X_train, X_test, y_train = self.prepare_final()
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
-    bow_X = vectorizer.fit_transform(X)
+    bow_train = vectorizer.fit_transform(X_train)
+    bow_test = vectorizer.transform(X_test)
 
-    self.final_clf.fit(bow_X, y)
-    bow_X = vectorizer.transform(self.final_test())
-    self.y_pred_final = self.final_clf.predict(bow_X)
+    final_clf.fit(bow_train, y_train)
+    self.y_pred_final = final_clf.predict(bow_test)
 
     return self.return_prediction() # Results of both trainings
 
@@ -136,19 +143,15 @@ class DualClassification(BaseClassification):
 
   def prepare_final(self):
     if self.threshold:
-      X = np.concatenate([self.X_train, self.X_ss[self.above_threshold]])
-      y = np.concatenate([self.y_train, self.y_pred_interm[self.above_threshold]])
+      X_train = np.concatenate([self.X_train, self.X_ss[self.above_threshold]])
+      y_train = np.concatenate([self.y_train, self.y_pred_interm[self.above_threshold]])
+      X_test = np.concatenate([self.X_ss[~self.above_threshold], self.X_test])
     else:
-      X = np.concatenate([self.X_train, self.X_ss])
-      y = np.concatenate([self.y_train, self.y_pred_interm])
+      X_train = np.concatenate([self.X_train, self.X_ss])
+      y_train = np.concatenate([self.y_train, self.y_pred_interm])
+      X_test = self.X_test
 
-    return X, y
-
-  def final_test(self):
-    if self.threshold:
-      return np.concatenate([self.X_ss[~self.above_threshold], self.X_test])
-    else:
-      return self.X_test
+    return X_train, X_test, y_train
 
   def return_prediction(self):
     # The scores should consider all errors
