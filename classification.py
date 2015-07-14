@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics  import accuracy_score, f1_score, matthews_corrcoef
+from sklearn.metrics  import accuracy_score, auc, f1_score, matthews_corrcoef, roc_curve
 # from skll.metrics import kappa # Skll 1.0.1 (current version) doesnt support scikit-learn 0.16
 
 class BaseClassification(object):
@@ -122,21 +122,26 @@ class DualClassification(BaseClassification):
       y_proba_interm = interm_clf.predict_proba(bow_ss.toarray())
 
     if self.threshold:
-      above_threshold = [proba[self.y_pred_interm[i]] >= self.threshold for i, proba in enumerate(y_proba_interm)]
+      above_threshold = [proba[self.y_pred_interm[i]] >= self.threshold
+                         for i, proba in enumerate(y_proba_interm)]
       self.above_threshold = np.asarray(above_threshold)
 
     # ============================ Final classifier ============================
-    X_train, X_test, y_train = self.prepare_final()
+    X_train, y_train = self.prepare_final()
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
     bow_train = vectorizer.fit_transform(X_train)
-    bow_test = vectorizer.transform(X_test)
+    bow_test = vectorizer.transform(self.X_test)
 
-    final_clf.fit(bow_train, y_train)
-    self.y_pred_final = final_clf.predict(bow_test)
+    try:
+      final_clf.fit(bow_train, y_train)
+      self.y_pred_final = final_clf.predict(bow_test)
+    except TypeError:
+      final_clf.fit(bow_train.toarray(), y_train)
+      self.y_pred_final = final_clf.predict(bow_test.toarray())
 
-    return self.return_prediction() # Results of both trainings
+    return self.y_test, self.y_pred_final # Result of the final training only
 
   def prepare_intermediate(self):
     return self.X_train, self.y_train
@@ -145,28 +150,11 @@ class DualClassification(BaseClassification):
     if self.threshold:
       X_train = np.concatenate([self.X_train, self.X_ss[self.above_threshold]])
       y_train = np.concatenate([self.y_train, self.y_pred_interm[self.above_threshold]])
-      X_test = np.concatenate([self.X_ss[~self.above_threshold], self.X_test])
     else:
       X_train = np.concatenate([self.X_train, self.X_ss])
       y_train = np.concatenate([self.y_train, self.y_pred_interm])
-      X_test = self.X_test
 
-    return X_train, X_test, y_train
-
-  def return_prediction(self):
-    # The scores should consider all errors
-
-    if self.threshold:
-      y_true = np.concatenate([self.y_ss[self.above_threshold],
-                               self.y_ss[~self.above_threshold],
-                               self.y_test])
-      y_pred = np.concatenate([self.y_pred_interm[self.above_threshold], self.y_pred_final])
-
-    else:
-      y_true = np.concatenate([self.y_ss, self.y_test])
-      y_pred = np.concatenate([self.y_pred_interm, self.y_pred_final])
-
-    return y_true, y_pred
+    return X_train, y_train
 
 class SemiSupervisedClassification(DualClassification):
   """ Modify the DualClassification to use the LabelPropagation and LabelSpreading
@@ -208,5 +196,9 @@ def calculate_scores(y_true, y_pred):
     scores['bh'] = float(fp) / (fp + tn)
   except ZeroDivisionError:
     scores['bh'] = 0
+
+  # Compute ROC curve and ROC area
+  scores['fpr'], scores['tpr'], _ = roc_curve(y_true, y_pred)
+  scores['roc_oneless_auc'] = 1 - auc(scores['fpr'], scores['tpr'])
 
   return scores

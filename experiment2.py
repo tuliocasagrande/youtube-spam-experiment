@@ -32,7 +32,7 @@ def exp2(filename):
   scores_list = []
 
   svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)
-  lab_spread_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10, scoring='f1')
+  ss_clf = LabelSpreading(kernel='rbf')
   config = [#('SVM Linear 0.1 + SS 0.6', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.1, ss_percent=0.6)),
             #('SVM Linear 0.2 + SS 0.5', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.2, ss_percent=0.5)),
             ('SVM Linear 0.3 + SS 0.4', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.3, ss_percent=0.4)),
@@ -41,7 +41,7 @@ def exp2(filename):
             ('SVM Linear 0.6 + SS 0.1', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.6, ss_percent=0.1))]
 
   for clf_title, clf in config:
-    y_true, y_pred = clf.classify(lab_spread_grid, svm_grid);
+    y_true, y_pred = clf.classify(ss_clf, svm_grid);
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
     print clf_title
     interm_clf, final_clf = clf.get_clfs()
@@ -96,4 +96,5 @@ if __name__ == "__main__":
 
     report.tex_report(tex_filename, video_title, scores_list)
     report.plot_mcc_bars(figurename, video_title, scores_list)
+    report.plot_roc(figurename, video_title, scores_list)
     csv_report.report(video_title, scores_list)

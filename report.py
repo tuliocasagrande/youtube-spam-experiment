@@ -49,9 +49,26 @@ def plot_mcc_bars(figurename, video_title, scores_list):
       bar[i].set_color('r')
 
   plt.xticks(np.arange(0, 1.1, 0.1)) # guarantee an interval [0,1]
-  plt.savefig(figurename + '.png', bbox_inches='tight')
-  plt.savefig(figurename + '.pdf', bbox_inches='tight')
+  plt.savefig(figurename + '_mcc.png', bbox_inches='tight')
+  plt.savefig(figurename + '_mcc.pdf', bbox_inches='tight')
 
+
+def plot_roc(figurename, video_title, scores_list):
+
+  plt.figure()
+  plt.title(video_title)
+  for clf_title, scores in scores_list:
+    plt.plot(scores['fpr'], scores['tpr'], label=clf_title + ' (1 - AUC = %0.2f)' % scores['roc_oneless_auc'])
+
+  plt.plot([0, 1], [0, 1], 'k--')
+  plt.xlim([0.0, 1.0])
+  plt.ylim([0.0, 1.0])
+  plt.xlabel('False Positive Rate')
+  plt.ylabel('True Positive Rate')
+  plt.legend(loc="lower right")
+
+  plt.savefig(figurename + '_roc.png', bbox_inches='tight')
+  plt.savefig(figurename + '_roc.pdf', bbox_inches='tight')
 
 class CsvReport:
 
