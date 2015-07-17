@@ -32,19 +32,30 @@ def exp2(filename):
   scores_list = []
 
   svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)
-  ss_clf = LabelSpreading(kernel='rbf')
-  config = [#('SVM Linear 0.1 + SS 0.6', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.1, ss_percent=0.6)),
-            #('SVM Linear 0.2 + SS 0.5', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.2, ss_percent=0.5)),
-            ('SVM Linear 0.3 + SS 0.4', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.3, ss_percent=0.4)),
-            ('SVM Linear 0.4 + SS 0.3', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.4, ss_percent=0.3)),
-            ('SVM Linear 0.5 + SS 0.2', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.5, ss_percent=0.2)),
-            ('SVM Linear 0.6 + SS 0.1', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.6, ss_percent=0.1))]
+  config = [('SVM 0.3', SingleClassification(filename, train_percent=0.3, test_percent=0.7)),
+            ('SVM 0.4', SingleClassification(filename, train_percent=0.4, test_percent=0.7)),
+            ('SVM 0.5', SingleClassification(filename, train_percent=0.5, test_percent=0.7)),
+            ('SVM 0.6', SingleClassification(filename, train_percent=0.6, test_percent=0.7)),
+            ('SVM 0.7', SingleClassification(filename, train_percent=0.7))]
 
-  for clf_title, clf in config:
-    y_true, y_pred = clf.classify(ss_clf, svm_grid);
+  for clf_title, option in config:
+    y_true, y_pred, clf = option.classify(svm_grid);
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
     print clf_title
-    interm_clf, final_clf = clf.get_clfs()
+    print_best_params(clf)
+
+  ss_clf = LabelSpreading(kernel='rbf', gamma=1)
+  # ss_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10)
+  config = [('SVM 0.3 + SS 0.4', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.3, ss_percent=0.4)),
+            ('SVM 0.4 + SS 0.3', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.4, ss_percent=0.3)),
+            ('SVM 0.5 + SS 0.2', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.5, ss_percent=0.2)),
+            ('SVM 0.6 + SS 0.1', SemiSupervisedClassification(filename, threshold=0.9, train_percent=0.6, ss_percent=0.1))]
+
+  for clf_title, option in config:
+    y_true, y_pred, interm_clf, final_clf, len_above_SS, len_X_ss = option.classify(ss_clf, svm_grid);
+    # scores_list.append(('{0} ({1}/{2})'.format(clf_title, len_above_SS, len_X_ss), calculate_scores(y_true, y_pred)))
+    scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
+    print clf_title
     print_best_params(interm_clf)
     print_best_params(final_clf)
 
@@ -79,11 +90,10 @@ if __name__ == "__main__":
                '09-Shakira-pRpeEdMmmQ0']
 
   csv_filename = os.path.join(results_path, 'results_mcc.csv')
-  clf_list = [#'SVM Linear 0.1 + SS 0.6',
-              #'SVM Linear 0.2 + SS 0.5',
-              'SVM Linear 0.3 + SS 0.4', 'SVM Linear 0.4 + SS 0.3',
-              'SVM Linear 0.5 + SS 0.2', 'SVM Linear 0.6 + SS 0.1']
-  csv_report = report.CsvReport(csv_filename, clf_list)
+  clf_list = ['SVM 0.3', 'SVM 0.4', 'SVM 0.5', 'SVM 0.6', 'SVM 0.7',
+              'SVM 0.3 + SS 0.4', 'SVM 0.4 + SS 0.3', 'SVM 0.5 + SS 0.2', 'SVM 0.6 + SS 0.1']
+
+  # csv_report = report.CsvReport(csv_filename, clf_list)
 
   for video_title in file_list:
     print '\n###############'
@@ -97,4 +107,4 @@ if __name__ == "__main__":
     report.tex_report(tex_filename, video_title, scores_list)
     report.plot_mcc_bars(figurename, video_title, scores_list)
     report.plot_roc(figurename, video_title, scores_list)
-    csv_report.report(video_title, scores_list)
+    # csv_report.report(video_title, scores_list)

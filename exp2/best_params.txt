@@ -1,0 +1,175 @@
+
+###############
+01-PSY-9bZkp7q19f0
+
+SVM 0.3
+LinearSVC
+	C: 1.0
+SVM 0.4
+LinearSVC
+	C: 0.1
+SVM 0.5
+LinearSVC
+	C: 1.0
+SVM 0.6
+LinearSVC
+	C: 0.1
+SVM 0.7
+LinearSVC
+	C: 0.1
+SVM 0.3 + SS 0.4
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.4 + SS 0.3
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.5 + SS 0.2
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.6 + SS 0.1
+LabelSpreading
+LinearSVC
+	C: 0.1
+
+###############
+04-KatyPerry-CevxZvSJLk8
+
+SVM 0.3
+LinearSVC
+	C: 0.1
+SVM 0.4
+LinearSVC
+	C: 0.1
+SVM 0.5
+LinearSVC
+	C: 10.0
+SVM 0.6
+LinearSVC
+	C: 0.1
+SVM 0.7
+LinearSVC
+	C: 0.1
+SVM 0.3 + SS 0.4
+LabelSpreading
+LinearSVC
+	C: 10.0
+SVM 0.4 + SS 0.3
+LabelSpreading
+LinearSVC
+	C: 10.0
+SVM 0.5 + SS 0.2
+LabelSpreading
+LinearSVC
+	C: 0.1
+SVM 0.6 + SS 0.1
+LabelSpreading
+LinearSVC
+	C: 1.0
+
+###############
+07-LMFAO-KQ6zr6kCPj8
+
+SVM 0.3
+LinearSVC
+	C: 1.0
+SVM 0.4
+LinearSVC
+	C: 0.1
+SVM 0.5
+LinearSVC
+	C: 10.0
+SVM 0.6
+LinearSVC
+	C: 100.0
+SVM 0.7
+LinearSVC
+	C: 1.0
+SVM 0.3 + SS 0.4
+LabelSpreading
+LinearSVC
+	C: 0.001
+SVM 0.4 + SS 0.3
+LabelSpreading
+LinearSVC
+	C: 0.1
+SVM 0.5 + SS 0.2
+LabelSpreading
+LinearSVC
+	C: 0.1
+SVM 0.6 + SS 0.1
+LabelSpreading
+LinearSVC
+	C: 0.1
+
+###############
+08-rotulada-tratada-embaralhada
+
+SVM 0.3
+LinearSVC
+	C: 0.1
+SVM 0.4
+LinearSVC
+	C: 0.01
+SVM 0.5
+LinearSVC
+	C: 100.0
+SVM 0.6
+LinearSVC
+	C: 1.0
+SVM 0.7
+LinearSVC
+	C: 0.1
+SVM 0.3 + SS 0.4
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.4 + SS 0.3
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.5 + SS 0.2
+LabelSpreading
+LinearSVC
+	C: 1.0
+SVM 0.6 + SS 0.1
+LabelSpreading
+LinearSVC
+	C: 1.0
+
+###############
+09-Shakira-pRpeEdMmmQ0
+
+SVM 0.3
+LinearSVC
+	C: 0.1
+SVM 0.4
+LinearSVC
+	C: 1.0
+SVM 0.5
+LinearSVC
+	C: 1.0
+SVM 0.6
+LinearSVC
+	C: 1.0
+SVM 0.7
+LinearSVC
+	C: 1.0
+SVM 0.3 + SS 0.4
+LabelSpreading
+LinearSVC
+	C: 0.1
+SVM 0.4 + SS 0.3
+LabelSpreading
+LinearSVC
+	C: 10.0
+SVM 0.5 + SS 0.2
+LabelSpreading
+LinearSVC
+	C: 10.0
+SVM 0.6 + SS 0.1
+LabelSpreading
+LinearSVC
+	C: 1.0

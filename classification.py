@@ -36,20 +36,18 @@ class SingleClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, train_percent=0.8):
+  def __init__(self, filename, train_percent=0.8, test_percent=None):
     super(SingleClassification, self).__init__(filename)
 
+    if not test_percent: test_percent = train_percent
+
     train_index = int(len(self.X) * train_percent)
+    test_index = int(len(self.X) * test_percent)
 
     self.X_train = self.X[ :train_index]
-    self.X_test = self.X[train_index: ]
-
     self.y_train = self.y[ :train_index]
-    self.y_test = self.y[train_index: ]
-
-    # Ensure the lists have the same length
-    assert(len(self.X) == len(self.X_train) + len(self.X_test))
-    assert(len(self.y) == len(self.y_train) + len(self.y_test))
+    self.X_test = self.X[test_index: ]
+    self.y_test = self.y[test_index: ]
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
@@ -66,7 +64,7 @@ class SingleClassification(BaseClassification):
       clf.fit(self.bow_train.toarray(), self.y_train)
       y_pred = clf.predict(self.bow_test.toarray())
 
-    return self.y_test, y_pred
+    return self.y_test, y_pred, clf
 
 
 class DualClassification(BaseClassification):
@@ -85,24 +83,15 @@ class DualClassification(BaseClassification):
     ss_index = int(len(self.X) * (train_percent+ss_percent))
 
     self.X_train = self.X[ :train_index]
-    self.X_ss = self.X[train_index:ss_index]
-    self.X_test = self.X[ss_index: ]
-
     self.y_train = self.y[ :train_index]
+
+    self.X_ss = self.X[train_index:ss_index]
     self.y_ss = self.y[train_index:ss_index]
+
+    self.X_test = self.X[ss_index: ]
     self.y_test = self.y[ss_index: ]
 
-    # Ensure the lists have the same length
-    assert(len(self.X) == len(self.X_train) + len(self.X_ss) + len(self.X_test))
-    assert(len(self.y) == len(self.y_train) + len(self.y_ss) + len(self.y_test))
-
-  def get_clfs(self):
-    return self.interm_clf, self.final_clf
-
   def classify(self, interm_clf, final_clf):
-
-    self.interm_clf = interm_clf
-    self.final_clf = final_clf
 
     # ======================== Intermediate classifier =========================
     X_train, y_train = self.prepare_intermediate()
@@ -141,7 +130,8 @@ class DualClassification(BaseClassification):
       final_clf.fit(bow_train.toarray(), y_train)
       self.y_pred_final = final_clf.predict(bow_test.toarray())
 
-    return self.y_test, self.y_pred_final # Result of the final training only
+    # Result of the final training only
+    return self.y_test, self.y_pred_final, interm_clf, final_clf, sum(above_threshold), len(self.X_ss)
 
   def prepare_intermediate(self):
     return self.X_train, self.y_train
