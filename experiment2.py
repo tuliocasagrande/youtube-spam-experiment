@@ -89,12 +89,6 @@ if __name__ == "__main__":
                '08-rotulada-tratada-embaralhada',
                '09-Shakira-pRpeEdMmmQ0']
 
-  csv_filename = os.path.join(results_path, 'results_mcc.csv')
-  clf_list = ['SVM 0.3', 'SVM 0.4', 'SVM 0.5', 'SVM 0.6', 'SVM 0.7',
-              'SVM 0.3 + SS 0.4', 'SVM 0.4 + SS 0.3', 'SVM 0.5 + SS 0.2', 'SVM 0.6 + SS 0.1']
-
-  # csv_report = report.CsvReport(csv_filename, clf_list)
-
   for video_title in file_list:
     print '\n###############'
     print video_title + '\n'
@@ -107,4 +101,3 @@ if __name__ == "__main__":
     report.tex_report(tex_filename, video_title, scores_list)
     report.plot_mcc_bars(figurename, video_title, scores_list)
     report.plot_roc(figurename, video_title, scores_list)
-    # csv_report.report(video_title, scores_list)
