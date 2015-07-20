@@ -7,7 +7,7 @@ from sklearn.metrics  import accuracy_score, auc, f1_score, matthews_corrcoef, r
 class BaseClassification(object):
   """ Base class for classification """
 
-  def __init__(self, filename):
+  def __init__(self, filename, stratified):
 
     content_list = []
     label_list = []
@@ -27,6 +27,15 @@ class BaseClassification(object):
     # Ensure that the lists are both the same length
     assert(len(self.X) == len(self.y))
 
+    if stratified:
+      # Maintain the original ratio between the training and test sets
+
+      self.X_spam = self.X[self.y == 1]
+      self.y_spam = self.y[self.y == 1]
+
+      self.X_ham = self.X[self.y == 0]
+      self.y_ham = self.y[self.y == 0]
+
 
 
 class SingleClassification(BaseClassification):
@@ -36,18 +45,31 @@ class SingleClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, train_percent=0.8, test_percent=None):
-    super(SingleClassification, self).__init__(filename)
+  def __init__(self, filename, train_percent=0.7, test_percent=None, stratified=False):
+    super(SingleClassification, self).__init__(filename, stratified)
 
-    if not test_percent: test_percent = train_percent
+    if not test_percent: test_percent = 1 - train_percent
 
-    train_index = int(len(self.X) * train_percent)
-    test_index = int(len(self.X) * test_percent)
+    if stratified:
+      train_index_spam = int(len(self.X_spam) * train_percent)
+      train_index_ham  = int(len(self.X_ham ) * train_percent)
 
-    self.X_train = self.X[ :train_index]
-    self.y_train = self.y[ :train_index]
-    self.X_test = self.X[test_index: ]
-    self.y_test = self.y[test_index: ]
+      test_index_spam = int(len(self.X_spam) * (1-test_percent))
+      test_index_ham  = int(len(self.X_ham ) * (1-test_percent))
+
+      self.X_train = np.concatenate([self.X_spam[ :train_index_spam], self.X_ham[ :train_index_ham]])
+      self.y_train = np.concatenate([self.y_spam[ :train_index_spam], self.y_ham[ :train_index_ham]])
+
+      self.X_test = np.concatenate([self.X_spam[test_index_spam: ], self.X_ham[test_index_ham: ]])
+      self.y_test = np.concatenate([self.y_spam[test_index_spam: ], self.y_ham[test_index_ham: ]])
+    else:
+      train_index = int(len(self.X) * train_percent)
+      test_index = int(len(self.X) * (1-test_percent))
+
+      self.X_train = self.X[ :train_index]
+      self.y_train = self.y[ :train_index]
+      self.X_test = self.X[test_index: ]
+      self.y_test = self.y[test_index: ]
 
     # Preparing bag of words
     vectorizer = CountVectorizer(min_df=1)
@@ -75,21 +97,37 @@ class DualClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, threshold=None, train_percent=0.2, ss_percent=0.4):
-    super(DualClassification, self).__init__(filename)
+  def __init__(self, filename, threshold=None, train_percent=0.3, ss_percent=0.4, stratified=False):
+    super(DualClassification, self).__init__(filename, stratified)
     self.threshold = threshold
 
-    train_index = int(len(self.X) * train_percent)
-    ss_index = int(len(self.X) * (train_percent+ss_percent))
+    if stratified:
+      train_index_spam = int(len(self.X_spam) * train_percent)
+      train_index_ham  = int(len(self.X_ham ) * train_percent)
 
-    self.X_train = self.X[ :train_index]
-    self.y_train = self.y[ :train_index]
+      ss_index_spam = int(len(self.X_spam) * (train_percent+ss_percent))
+      ss_index_ham  = int(len(self.X_ham ) * (train_percent+ss_percent))
 
-    self.X_ss = self.X[train_index:ss_index]
-    self.y_ss = self.y[train_index:ss_index]
+      self.X_train = np.concatenate([self.X_spam[ :train_index_spam], self.X_ham[ :train_index_ham]])
+      self.y_train = np.concatenate([self.y_spam[ :train_index_spam], self.y_ham[ :train_index_ham]])
 
-    self.X_test = self.X[ss_index: ]
-    self.y_test = self.y[ss_index: ]
+      self.X_ss = np.concatenate([self.X_spam[train_index_spam:ss_index_spam], self.X_ham[train_index_ham:ss_index_ham]])
+      self.y_ss = np.concatenate([self.y_spam[train_index_spam:ss_index_spam], self.y_ham[train_index_ham:ss_index_ham]])
+
+      self.X_test = np.concatenate([self.X_spam[ss_index_spam: ], self.X_ham[ss_index_ham: ]])
+      self.y_test = np.concatenate([self.y_spam[ss_index_spam: ], self.y_ham[ss_index_ham: ]])
+    else:
+      train_index = int(len(self.X) * train_percent)
+      ss_index = int(len(self.X) * (train_percent+ss_percent))
+
+      self.X_train = self.X[ :train_index]
+      self.y_train = self.y[ :train_index]
+
+      self.X_ss = self.X[train_index:ss_index]
+      self.y_ss = self.y[train_index:ss_index]
+
+      self.X_test = self.X[ss_index: ]
+      self.y_test = self.y[ss_index: ]
 
   def classify(self, interm_clf, final_clf):
 

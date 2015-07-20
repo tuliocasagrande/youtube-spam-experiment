@@ -32,10 +32,10 @@ def exp2(filename):
   scores_list = []
 
   svm_grid = GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)
-  config = [('SVM 0.3', SingleClassification(filename, train_percent=0.3, test_percent=0.7)),
-            ('SVM 0.4', SingleClassification(filename, train_percent=0.4, test_percent=0.7)),
-            ('SVM 0.5', SingleClassification(filename, train_percent=0.5, test_percent=0.7)),
-            ('SVM 0.6', SingleClassification(filename, train_percent=0.6, test_percent=0.7)),
+  config = [('SVM 0.3', SingleClassification(filename, train_percent=0.3, test_percent=0.3)),
+            ('SVM 0.4', SingleClassification(filename, train_percent=0.4, test_percent=0.3)),
+            ('SVM 0.5', SingleClassification(filename, train_percent=0.5, test_percent=0.3)),
+            ('SVM 0.6', SingleClassification(filename, train_percent=0.6, test_percent=0.3)),
             ('SVM 0.7', SingleClassification(filename, train_percent=0.7))]
 
   for clf_title, option in config:
