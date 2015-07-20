@@ -41,8 +41,8 @@ def exp3(filename):
     print clf_title
     print_best_params(clf)
 
-  ss_clf = LabelSpreading(kernel='rbf', gamma=1)
-  # ss_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10)
+  # ss_clf = LabelSpreading(kernel='rbf', gamma=1)
+  ss_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10)
   config = [('SVM 0.3 + SS 0.4 (thr 0.7)',  SemiSupervisedClassification(filename, threshold=0.7 , train_percent=0.3, ss_percent=0.4)),
             ('SVM 0.3 + SS 0.4 (thr 0.75)', SemiSupervisedClassification(filename, threshold=0.75, train_percent=0.3, ss_percent=0.4)),
             ('SVM 0.3 + SS 0.4 (thr 0.8)',  SemiSupervisedClassification(filename, threshold=0.8 , train_percent=0.3, ss_percent=0.4)),
@@ -52,7 +52,7 @@ def exp3(filename):
             ('SVM 0.3 + SS 0.4 (thr 1.0)',  SemiSupervisedClassification(filename, threshold=1.0 , train_percent=0.3, ss_percent=0.4))]
 
   for clf_title, option in config:
-    y_true, y_pred, interm_clf, final_clf, len_above_SS, len_X_ss = option.classify(ss_clf, svm_grid);
+    y_true, y_pred, interm_clf, final_clf, len_above_SS, len_X_ss = option.classify(ss_grid, svm_grid);
     scores_list.append(('{0} ({1}/{2})'.format(clf_title, len_above_SS, len_X_ss), calculate_scores(y_true, y_pred)))
     # scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
     print clf_title
