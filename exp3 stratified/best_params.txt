@@ -4,10 +4,10 @@
 
 SVM 0.3
 LinearSVC
-	C: 1.0
+	C: 0.01
 SVM 0.7
 LinearSVC
-	C: 0.1
+	C: 0.01
 SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
 LinearSVC
@@ -42,7 +42,7 @@ LinearSVC
 
 SVM 0.3
 LinearSVC
-	C: 0.1
+	C: 1.0
 SVM 0.7
 LinearSVC
 	C: 0.1
@@ -156,7 +156,7 @@ LinearSVC
 
 SVM 0.3
 LinearSVC
-	C: 0.1
+	C: 0.001
 SVM 0.7
 LinearSVC
 	C: 1.0
