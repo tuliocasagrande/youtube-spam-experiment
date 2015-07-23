@@ -46,9 +46,9 @@ def exp1(filename):
 
   single_classification = SingleClassification(filename, train_percent=0.7)
   for clf_title, clf in config:
-    y_true, y_pred = single_classification.classify(clf)
+    y_true, y_pred, fitted_clf = single_classification.classify(clf)
     scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
-    print_best_params(clf)
+    print_best_params(fitted_clf)
 
   scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']), reverse=True)
   return scores_list
@@ -76,8 +76,8 @@ if __name__ == "__main__":
   file_list = ['01-PSY-9bZkp7q19f0',
                '04-KatyPerry-CevxZvSJLk8',
                '07-LMFAO-KQ6zr6kCPj8',
-               # '08-Eminem-uelHwf8o7_U',
-               '08-rotulada-tratada-embaralhada',
+               '08-Eminem-uelHwf8o7_U',
+               # '08-rotulada-tratada-embaralhada',
                '09-Shakira-pRpeEdMmmQ0']
 
   csv_filename = os.path.join(results_path, 'results_mcc.csv')

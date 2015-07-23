@@ -84,8 +84,8 @@ if __name__ == "__main__":
   file_list = ['01-PSY-9bZkp7q19f0',
                '04-KatyPerry-CevxZvSJLk8',
                '07-LMFAO-KQ6zr6kCPj8',
-               # '08-Eminem-uelHwf8o7_U',
-               '08-rotulada-tratada-embaralhada',
+               '08-Eminem-uelHwf8o7_U',
+               # '08-rotulada-tratada-embaralhada',
                '09-Shakira-pRpeEdMmmQ0']
 
   for video_title in file_list:

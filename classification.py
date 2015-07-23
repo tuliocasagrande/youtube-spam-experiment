@@ -45,7 +45,7 @@ class SingleClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, train_percent=0.7, test_percent=None, stratified=False):
+  def __init__(self, filename, train_percent=0.7, test_percent=None, stratified=True):
     super(SingleClassification, self).__init__(filename, stratified)
 
     if not test_percent: test_percent = 1 - train_percent
@@ -97,7 +97,7 @@ class DualClassification(BaseClassification):
       The dataset must be ordered by date (first = oldest)
   """
 
-  def __init__(self, filename, threshold=None, train_percent=0.3, ss_percent=0.4, stratified=False):
+  def __init__(self, filename, threshold=None, train_percent=0.3, ss_percent=0.4, stratified=True):
     super(DualClassification, self).__init__(filename, stratified)
     self.threshold = threshold
 

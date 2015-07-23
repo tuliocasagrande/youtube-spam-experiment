@@ -4,52 +4,52 @@
 
 SVM 0.3
 LinearSVC
-	C: 1.0
+	C: 0.01
 SVM 0.7
 LinearSVC
-	C: 0.1
+	C: 0.01
 SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.01
 SVM 0.3 + SS 0.4 (thr 0.75)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.8)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.85)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 10.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 10.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 1.0)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 
 ###############
 04-KatyPerry-CevxZvSJLk8
 
 SVM 0.3
 LinearSVC
-	C: 0.1
+	C: 1.0
 SVM 0.7
 LinearSVC
 	C: 0.1
@@ -57,12 +57,12 @@ SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 10.0
+	C: 1.0
 SVM 0.3 + SS 0.4 (thr 0.75)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.1
+	C: 1.0
 SVM 0.3 + SS 0.4 (thr 0.8)
 LabelSpreading
 	gamma: 1.0
@@ -72,12 +72,12 @@ SVM 0.3 + SS 0.4 (thr 0.85)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 10.0
+	C: 1.0
 SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 10.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
 	gamma: 1.0
@@ -87,7 +87,7 @@ SVM 0.3 + SS 0.4 (thr 1.0)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.1
+	C: 1.0
 
 ###############
 07-LMFAO-KQ6zr6kCPj8
@@ -102,32 +102,32 @@ SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1e-05
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.75)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1e-05
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.8)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.001
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.85)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.0001
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.001
+	C: 1.0
 SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 0.1
+	C: 1.0
 SVM 0.3 + SS 0.4 (thr 1.0)
 LabelSpreading
 	gamma: 1.0
@@ -135,7 +135,7 @@ LinearSVC
 	C: 1.0
 
 ###############
-08-rotulada-tratada-embaralhada
+08-Eminem-uelHwf8o7_U
 
 SVM 0.3
 LinearSVC
@@ -147,12 +147,12 @@ SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.01
 SVM 0.3 + SS 0.4 (thr 0.75)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.8)
 LabelSpreading
 	gamma: 1.0
@@ -162,7 +162,7 @@ SVM 0.3 + SS 0.4 (thr 0.85)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
 	gamma: 1.0
@@ -172,7 +172,7 @@ SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 1.0)
 LabelSpreading
 	gamma: 1.0
@@ -184,42 +184,42 @@ LinearSVC
 
 SVM 0.3
 LinearSVC
-	C: 0.1
+	C: 0.001
 SVM 0.7
 LinearSVC
 	C: 1.0
 SVM 0.3 + SS 0.4 (thr 0.7)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 0.001
 SVM 0.3 + SS 0.4 (thr 0.75)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 10.0
 SVM 0.3 + SS 0.4 (thr 0.8)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 10.0
 SVM 0.3 + SS 0.4 (thr 0.85)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 10.0
 SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 0.001
 SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 0.001
 SVM 0.3 + SS 0.4 (thr 1.0)
 LabelSpreading
-	gamma: 1.0
+	gamma: 0.1
 LinearSVC
-	C: 0.1
+	C: 0.001
