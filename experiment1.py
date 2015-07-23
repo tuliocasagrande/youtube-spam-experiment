@@ -97,4 +97,5 @@ if __name__ == "__main__":
 
     report.tex_report(tex_filename, video_title, scores_list)
     report.plot_mcc_bars(figurename, video_title, scores_list)
+    report.plot_roc(figurename, video_title, scores_list)
     csv_report.report(video_title, scores_list)
