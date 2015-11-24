@@ -1,6 +1,6 @@
 
 ###############
-01-PSY-9bZkp7q19f0
+01-9bZkp7q19f0
 
 MultinomialNB
 	alpha: 1.0
@@ -27,7 +27,7 @@ KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-04-KatyPerry-CevxZvSJLk8
+04-CevxZvSJLk8
 
 MultinomialNB
 	alpha: 1.0
@@ -54,7 +54,7 @@ KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-07-LMFAO-KQ6zr6kCPj8
+07-KQ6zr6kCPj8
 
 MultinomialNB
 	alpha: 0.1
@@ -81,7 +81,7 @@ KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-08-Eminem-uelHwf8o7_U
+08-uelHwf8o7_U
 
 MultinomialNB
 	alpha: 0.1
@@ -108,7 +108,7 @@ KNeighborsClassifier
 KNeighborsClassifier
 
 ###############
-09-Shakira-pRpeEdMmmQ0
+09-pRpeEdMmmQ0
 
 MultinomialNB
 	alpha: 0.01

@@ -1,6 +1,6 @@
 
 ###############
-01-PSY-9bZkp7q19f0
+01-9bZkp7q19f0
 
 SVM 0.3
 LinearSVC
@@ -39,7 +39,7 @@ LinearSVC
 	C: 0.1
 
 ###############
-04-KatyPerry-CevxZvSJLk8
+04-CevxZvSJLk8
 
 SVM 0.3
 LinearSVC
@@ -78,7 +78,7 @@ LinearSVC
 	C: 0.1
 
 ###############
-07-LMFAO-KQ6zr6kCPj8
+07-KQ6zr6kCPj8
 
 SVM 0.3
 LinearSVC
@@ -117,7 +117,7 @@ LinearSVC
 	C: 1.0
 
 ###############
-08-Eminem-uelHwf8o7_U
+08-uelHwf8o7_U
 
 SVM 0.3
 LinearSVC
@@ -156,7 +156,7 @@ LinearSVC
 	C: 1.0
 
 ###############
-09-Shakira-pRpeEdMmmQ0
+09-pRpeEdMmmQ0
 
 SVM 0.3
 LinearSVC

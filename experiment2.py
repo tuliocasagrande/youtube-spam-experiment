@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # This Python file uses the following encoding: utf-8
 
-from classification import calculate_scores, SingleClassification, DualClassification, SemiSupervisedClassification
+from classification import calculate_scores, SingleClassification, SemiSupervisedClassification
 import os
 import report
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
@@ -11,7 +11,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import make_scorer, matthews_corrcoef
 from sklearn.naive_bayes import BernoulliNB, GaussianNB, MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.pipeline import Pipeline
 from sklearn.semi_supervised import LabelPropagation, LabelSpreading
 from sklearn.svm import LinearSVC, SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -81,18 +80,17 @@ if __name__ == "__main__":
   if not os.path.exists(figures_path):
     os.makedirs(figures_path)
 
-  file_list = ['01-PSY-9bZkp7q19f0',
-               '04-KatyPerry-CevxZvSJLk8',
-               '07-LMFAO-KQ6zr6kCPj8',
-               '08-Eminem-uelHwf8o7_U',
-               # '08-rotulada-tratada-embaralhada',
-               '09-Shakira-pRpeEdMmmQ0']
+  file_list = ['01-9bZkp7q19f0',
+               '04-CevxZvSJLk8',
+               '07-KQ6zr6kCPj8',
+               '08-uelHwf8o7_U',
+               '09-pRpeEdMmmQ0']
 
   for video_title in file_list:
     print '\n###############'
     print video_title + '\n'
 
-    scores_list = exp2(os.path.join('data_new', video_title + '.csv'))
+    scores_list = exp2(os.path.join('data_csv', video_title + '.csv'))
 
     tex_filename = os.path.join(results_path, video_title + '.tex')
     figurename = os.path.join(figures_path, video_title)

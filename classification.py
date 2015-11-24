@@ -15,7 +15,7 @@ class BaseClassification(object):
     # Reading and parsing CSV file
     with open(filename, 'rb') as csvfile:
       reader = csv.reader(csvfile)
-      reader.next() # Skiping the header
+      reader.next() # Skipping the header
 
       for row in reader:
         content_list.append(row[3])
