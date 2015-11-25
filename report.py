@@ -39,12 +39,12 @@ def tex_report(filename, video_title, scores_list):
         output_file.write(s)
 
 
-def plot_mcc_bars(figurename, video_title, scores_list):
+def plot_bars(figurename, video_title, scores_list, metric):
     plt.figure()
     plt.title(video_title)
-    plt.xlabel('MCC')
+    plt.xlabel(metric.upper())
 
-    performance = [scores['mcc'] for clf_title, scores in scores_list]
+    performance = [scores[metric] for clf_title, scores in scores_list]
     classifiers = tuple(clf_title for clf_title, scores in scores_list)
     y_pos = np.arange(len(classifiers))
     plt.yticks(y_pos, classifiers)
@@ -82,9 +82,10 @@ def plot_roc(figurename, video_title, scores_list):
 
 class CsvReport:
 
-    def __init__(self, filename, clf_list):
+    def __init__(self, filename, clf_list, metric):
         self.filename = filename
         self.clf_list = clf_list
+        self.metric = metric
         with open(filename, 'w') as f:
             csv.writer(f).writerow(['Video'] + clf_list)
 
@@ -95,7 +96,7 @@ class CsvReport:
 
         row = [video_title]
         for clf in self.clf_list:
-            row.append(scores_dict[clf]['mcc'])
+            row.append(scores_dict[clf][self.metric])
 
         with open(self.filename, 'a') as f:
             csv.writer(f).writerow(row)

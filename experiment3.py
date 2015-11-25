@@ -101,5 +101,5 @@ if __name__ == "__main__":
         figurename = os.path.join(figures_path, video_title)
 
         report.tex_report(tex_filename, video_title, scores_list)
-        report.plot_mcc_bars(figurename, video_title, scores_list)
+        report.plot_bars(figurename, video_title, scores_list, 'mcc')
         report.plot_roc(figurename, video_title, scores_list)

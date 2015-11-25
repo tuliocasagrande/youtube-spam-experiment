@@ -91,7 +91,7 @@ if __name__ == "__main__":
     clf_list = ['MultinomialNB', 'BernoulliNB', 'GaussianNB', 'SVM Linear',
                 'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
                 'RandomForest', '1-NN', '3-NN', '5-NN']
-    csv_report = report.CsvReport(csv_filename, clf_list)
+    csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
 
     for video_title in file_list:
         print '\n###############'
@@ -103,6 +103,6 @@ if __name__ == "__main__":
         figurename = os.path.join(figures_path, video_title)
 
         report.tex_report(tex_filename, video_title, scores_list)
-        report.plot_mcc_bars(figurename, video_title, scores_list)
+        report.plot_bars(figurename, video_title, scores_list, 'mcc')
         report.plot_roc(figurename, video_title, scores_list)
         csv_report.report(video_title, scores_list)

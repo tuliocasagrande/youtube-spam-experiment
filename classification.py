@@ -3,10 +3,10 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import (
     accuracy_score,
-    auc,
     cohen_kappa_score,
     f1_score,
     matthews_corrcoef,
+    roc_auc_score,
     roc_curve
 )
 
@@ -228,6 +228,9 @@ class SemiSupervisedClassification(DualClassification):
 
 def calculate_scores(y_true, y_pred):
 
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
     # Ensure that the lists are both the same length
     assert(len(y_true) == len(y_pred))
 
@@ -254,6 +257,6 @@ def calculate_scores(y_true, y_pred):
 
     # Compute ROC curve and ROC area
     scores['fpr'], scores['tpr'], _ = roc_curve(y_true, y_pred)
-    scores['roc_oneless_auc'] = 1 - auc(scores['fpr'], scores['tpr'])
+    scores['roc_oneless_auc'] = 1 - roc_auc_score(y_true, y_pred)
 
     return scores
