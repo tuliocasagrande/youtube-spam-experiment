@@ -58,10 +58,10 @@ def plot_bars(figurename, video_title, scores_list, metric):
     plt.xticks(np.arange(0, 1.1, 0.1))  # guarantee an interval [0,1]
     plt.savefig(figurename + '_mcc.png', bbox_inches='tight')
     plt.savefig(figurename + '_mcc.pdf', bbox_inches='tight')
+    plt.close()
 
 
 def plot_roc(figurename, video_title, scores_list):
-
     plt.figure()
     plt.title(video_title)
     for clf_title, scores in scores_list:
@@ -78,6 +78,7 @@ def plot_roc(figurename, video_title, scores_list):
 
     plt.savefig(figurename + '_roc.png', bbox_inches='tight')
     plt.savefig(figurename + '_roc.pdf', bbox_inches='tight')
+    plt.close()
 
 
 class CsvReport:
