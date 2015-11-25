@@ -91,15 +91,15 @@ GaussianNB
 LinearSVC
 	C: 0.1
 SVC
-	C: 1000.0
-	gamma: 0.0001
+	C: 100.0
+	gamma: 0.001
 SVC
 	C: 1e-05
 	gamma: 100.0
 LogisticRegression
 	C: 1.0
 DecisionTreeClassifier
-	criterion: entropy
+	criterion: gini
 RandomForestClassifier
 	n_estimators: 100
 	criterion: entropy

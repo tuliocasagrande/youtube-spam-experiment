@@ -45,8 +45,7 @@ if __name__ == '__main__':
     if not os.path.exists('data_bow'):
         os.makedirs('data_bow')
 
-    file_list = ['example',
-                 '01-9bZkp7q19f0',
+    file_list = ['01-9bZkp7q19f0',
                  '04-CevxZvSJLk8',
                  '07-KQ6zr6kCPj8',
                  '08-uelHwf8o7_U',

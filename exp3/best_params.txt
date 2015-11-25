@@ -167,7 +167,7 @@ SVM 0.3 + SS 0.4 (thr 0.9)
 LabelSpreading
 	gamma: 1.0
 LinearSVC
-	C: 1.0
+	C: 0.1
 SVM 0.3 + SS 0.4 (thr 0.95)
 LabelSpreading
 	gamma: 1.0
