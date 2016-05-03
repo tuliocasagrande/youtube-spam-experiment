@@ -98,7 +98,7 @@ class SingleClassification(BaseClassification):
             clf.fit(self.bow_train.toarray(), self.y_train)
             y_pred = clf.predict(self.bow_test.toarray())
 
-        return self.y_test, y_pred, clf
+        return self.y_test, y_pred
 
 
 class DualClassification(BaseClassification):

@@ -58,20 +58,19 @@ def exp1(filename):
     for clf_title, clf in config:
         logger.info("Fitting " + clf_title)
 
-        y_true, y_pred, fitted_clf = single_classification.classify(clf)
+        y_true, y_pred = single_classification.classify(clf)
         scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
-        best_params += get_best_params(fitted_clf) or ''
+        best_params += get_best_params(clf_title, clf) or ''
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),
                      reverse=True)
     return scores_list, best_params
 
 
-def get_best_params(clf):
+def get_best_params(clf_title, clf):
     if type(clf) == GridSearchCV:
         best_parameters = clf.best_estimator_.get_params()
-        return clf.best_estimator_.__class__.__name__ + ' - ' + \
-            ', '.join(['{}: {}'.format(key, best_parameters[key])
+        return clf_title + ' - ' + ', '.join(['{}: {}'.format(key, best_parameters[key])
             for key in clf.param_grid]) + '\n'
 
 
