@@ -84,7 +84,7 @@ class SingleClassification(BaseClassification):
             self.y_test = self.y[test_index:]
 
         # Preparing bag of words
-        vectorizer = CountVectorizer(min_df=1)
+        vectorizer = CountVectorizer()
         self.bow_train = vectorizer.fit_transform(self.X_train)
         self.bow_test = vectorizer.transform(self.X_test)
 

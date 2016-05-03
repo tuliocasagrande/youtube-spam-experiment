@@ -1,5 +1,8 @@
 # This Python file uses the following encoding: utf-8
 
+import matplotlib
+matplotlib.use('Agg')
+
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -91,13 +94,15 @@ class CsvReport:
             csv.writer(f).writerow(['Video'] + clf_list)
 
     def report(self, video_title, scores_list):
+        precision = 10
+
         scores_dict = {}
         for clf_title, sc in scores_list:
             scores_dict[clf_title] = sc
 
         row = [video_title]
         for clf in self.clf_list:
-            row.append(scores_dict[clf][self.metric])
+            row.append(round(scores_dict[clf][self.metric], precision))
 
         with open(self.filename, 'a') as f:
             csv.writer(f).writerow(row)
