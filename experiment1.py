@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # This Python file uses the following encoding: utf-8
 
 from classification import calculate_scores, SingleClassification
@@ -13,6 +12,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC, SVC
 from sklearn.tree import DecisionTreeClassifier
 
+import logging
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logger = logging.getLogger()
 
 def exp1(filename):
 
@@ -27,6 +29,7 @@ def exp1(filename):
     mcc = make_scorer(matthews_corrcoef)
 
     scores_list = []
+    best_params = ''
 
     config = [
         ('MultinomialNB', GridSearchCV(MultinomialNB(),
@@ -53,23 +56,23 @@ def exp1(filename):
 
     single_classification = SingleClassification(filename, train_percent=0.7)
     for clf_title, clf in config:
+        logger.info("Fitting " + clf_title)
+
         y_true, y_pred, fitted_clf = single_classification.classify(clf)
         scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
-        print_best_params(fitted_clf)
+        best_params += get_best_params(fitted_clf) or ''
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),
                      reverse=True)
-    return scores_list
+    return scores_list, best_params
 
 
-def print_best_params(clf):
-    if type(clf) != GridSearchCV:
-        print clf.__class__.__name__
-    else:
-        print clf.best_estimator_.__class__.__name__
+def get_best_params(clf):
+    if type(clf) == GridSearchCV:
         best_parameters = clf.best_estimator_.get_params()
-        for key in clf.param_grid:
-            print '\t{0}: {1}'.format(key, best_parameters[key])
+        return clf.best_estimator_.__class__.__name__ + ' - ' + \
+            ', '.join(['{}: {}'.format(key, best_parameters[key])
+            for key in clf.param_grid]) + '\n'
 
 
 if __name__ == "__main__":
@@ -93,11 +96,17 @@ if __name__ == "__main__":
                 'RandomForest', '1-NN', '3-NN', '5-NN']
     csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
 
-    for video_title in file_list:
-        print '\n###############'
-        print video_title + '\n'
+    with open(os.path.join('exp1', 'best_params.txt'), 'w') as f:
+        f.write('Best Parameters\n')
 
-        scores_list = exp1(os.path.join('data_csv', video_title + '.csv'))
+    for video_title in file_list:
+        logger.info("TRAINING VIDEO " + video_title)
+        scores_list, best_params = exp1(os.path.join('data_csv', video_title + '.csv'))
+
+        with open(os.path.join('exp1', 'best_params.txt'), 'a') as f:
+            f.write('\n##############\n')
+            f.write(video_title + '\n\n')
+            f.write(best_params)
 
         tex_filename = os.path.join(results_path, video_title + '.tex')
         figurename = os.path.join(figures_path, video_title)
