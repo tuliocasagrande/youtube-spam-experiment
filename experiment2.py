@@ -1,8 +1,7 @@
-#!/usr/bin/python
 # This Python file uses the following encoding: utf-8
 
-from classification import (calculate_scores,
-                            SingleClassification, SemiSupervisedClassification)
+from classification import (calculate_scores, SingleClassification,
+                            SemiSupervisedClassification)
 import os
 import report
 from sklearn.grid_search import GridSearchCV

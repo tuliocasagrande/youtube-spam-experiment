@@ -55,28 +55,29 @@ def exp1(filename):
     ]
 
     single_classification = SingleClassification(filename, train_percent=0.7)
-    for clf_title, clf in config:
-        logger.info("Fitting " + clf_title)
+    for classifier_title, classifier in config:
+        logger.info("Fitting " + classifier_title)
 
-        y_true, y_pred = single_classification.classify(clf)
-        scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
-        best_params += get_best_params(clf_title, clf) or ''
+        y_true, y_pred = single_classification.classify(classifier)
+        scores_list.append((classifier_title, calculate_scores(y_true, y_pred)))
+        best_params += get_best_params(classifier_title, classifier) or ''
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),
                      reverse=True)
     return scores_list, best_params
 
 
-def get_best_params(clf_title, clf):
-    if type(clf) == GridSearchCV:
-        best_parameters = clf.best_estimator_.get_params()
+def get_best_params(clf_title, classifier):
+    if type(classifier) == GridSearchCV:
+        best_parameters = classifier.best_estimator_.get_params()
         return clf_title + ' - ' + ', '.join(['{}: {}'.format(key, best_parameters[key])
-            for key in clf.param_grid]) + '\n'
+            for key in classifier.param_grid]) + '\n'
 
 
 if __name__ == "__main__":
-    results_path = os.path.join('exp1', 'results')
-    figures_path = os.path.join('exp1', 'figures')
+    EXPERIMENT_FOLDER = 'exp1'
+    results_path = os.path.join(EXPERIMENT_FOLDER, 'results')
+    figures_path = os.path.join(EXPERIMENT_FOLDER, 'figures')
 
     if not os.path.exists(results_path):
         os.makedirs(results_path)
@@ -95,14 +96,14 @@ if __name__ == "__main__":
                 'RandomForest', '1-NN', '3-NN', '5-NN']
     csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
 
-    with open(os.path.join('exp1', 'best_params.txt'), 'w') as f:
+    with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'w') as f:
         f.write('Best Parameters\n')
 
     for video_title in file_list:
         logger.info("TRAINING VIDEO " + video_title)
         scores_list, best_params = exp1(os.path.join('data_csv', video_title + '.csv'))
 
-        with open(os.path.join('exp1', 'best_params.txt'), 'a') as f:
+        with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'a') as f:
             f.write('\n##############\n')
             f.write(video_title + '\n\n')
             f.write(best_params)

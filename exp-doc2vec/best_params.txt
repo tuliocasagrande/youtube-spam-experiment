@@ -1,0 +1,56 @@
+Best Parameters
+
+##############
+01-9bZkp7q19f0
+
+BernoulliNB - alpha: 10.0
+SVM Linear - C: 0.1
+SVM RBF - C: 10.0, gamma: 0.01
+SVM Poly - C: 0.001, gamma: 1.0
+Logistic - C: 1.0
+DecisionTree - criterion: entropy
+RandomForest - n_estimators: 100, criterion: gini
+
+##############
+04-CevxZvSJLk8
+
+BernoulliNB - alpha: 10000.0
+SVM Linear - C: 0.1
+SVM RBF - C: 100.0, gamma: 0.01
+SVM Poly - C: 0.001, gamma: 1.0
+Logistic - C: 1.0
+DecisionTree - criterion: entropy
+RandomForest - n_estimators: 50, criterion: gini
+
+##############
+07-KQ6zr6kCPj8
+
+BernoulliNB - alpha: 10.0
+SVM Linear - C: 1.0
+SVM RBF - C: 100.0, gamma: 0.01
+SVM Poly - C: 0.001, gamma: 10.0
+Logistic - C: 1000.0
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 90, criterion: entropy
+
+##############
+08-uelHwf8o7_U
+
+BernoulliNB - alpha: 100.0
+SVM Linear - C: 0.01
+SVM RBF - C: 10.0, gamma: 0.01
+SVM Poly - C: 1e-05, gamma: 10.0
+Logistic - C: 0.1
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 100, criterion: entropy
+
+##############
+09-pRpeEdMmmQ0
+
+BernoulliNB - alpha: 1e-05
+SVM Linear - C: 0.1
+SVM RBF - C: 100.0, gamma: 0.01
+SVM Poly - C: 1e-05, gamma: 10.0
+Logistic - C: 1.0
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 60, criterion: entropy
