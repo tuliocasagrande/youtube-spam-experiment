@@ -1,40 +1,31 @@
 # This Python file uses the following encoding: utf-8
 
-from classification import calculate_scores
 import numpy as np
 import os
-import report
 import unicodecsv as csv
 
 from gensim.models import Doc2Vec
 from gensim.models.doc2vec import TaggedDocument
-
-from nltk import word_tokenize as nltk_tokenizer
 from sklearn.feature_extraction.text import CountVectorizer
 
 import logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 logger = logging.getLogger()
 
 EXPERIMENT_FOLDER = 'exp-doc2vec'
 if not os.path.exists(EXPERIMENT_FOLDER):
     os.makedirs(EXPERIMENT_FOLDER)
 
-
 MODELS_FOLDER = 'doc2vec_models'
 if not os.path.exists(MODELS_FOLDER):
     os.makedirs(MODELS_FOLDER)
 
 
-EPOCH = 5000
+EPOCH = 100
 
 
-def get_corpus_filelist():
-    file_list = []
-    for file in os.listdir("youtube-corpus"):
-        if file.endswith(".csv"):
-            file_list.append(file)
-    return file_list
+def get_corpus_file_list():
+    return [corpus_file for corpus_file in os.listdir("youtube-corpus") if corpus_file.endswith(".csv")]
 
 
 def read_dataset(filename):
@@ -72,13 +63,11 @@ def read_unlabeled_dataset(filename):
     return X
 
 
-def split_dataset(X, y):
+def split_dataset(X, y, train_percent=0.7):
 
     assert(len(X) == len(y))
     X_pos = X[y == 1]
     X_neg = X[y == 0]
-
-    train_percent = 0.7
 
     index_pos_train = int(len(X_pos) * train_percent)
     index_neg_train = int(len(X_neg) * train_percent)
@@ -92,9 +81,8 @@ def split_dataset(X, y):
     return X_pos_train, X_neg_train, X_pos_test, X_neg_test
 
 
-def prepare_sentences(sources):
+def prepare_documents(sources):
     tokenizer = CountVectorizer().build_analyzer()
-    # tokenizer = nltk_tokenizer
     for base, label in sources:
         for idx, sample in enumerate(base):
             yield TaggedDocument(tokenizer(sample), ['{}_{}'.format(label, idx)])
@@ -102,13 +90,25 @@ def prepare_sentences(sources):
 
 def doc2vec_vectorizer(sources):
 
-    sentences = [sentence for sentence in prepare_sentences(sources)]
+    documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(sentences, min_count=1, iter=EPOCH, workers=2)
+    model = Doc2Vec(documents, size=100, window=5, min_count=1, iter=EPOCH)
     model.save(os.path.join(MODELS_FOLDER, 'corpus-100k-youtube.d2v'))
 
 
 if __name__ == "__main__":
+
+    sources = ()
+    X_unsup = []
+
+    corpus_file_list = get_corpus_file_list()
+    logger.info("YouTube corpus: {} videos".format(len(corpus_file_list)))
+
+    for corpus_file in corpus_file_list:
+        X_video_unsup = read_unlabeled_dataset(os.path.join('youtube-corpus', corpus_file))
+        X_unsup = np.concatenate((X_unsup, X_video_unsup))
+
+    sources += ((X_unsup, 'TRAIN_UNS'),)
 
     file_list = ['01-9bZkp7q19f0',
                  '04-CevxZvSJLk8',
@@ -116,20 +116,8 @@ if __name__ == "__main__":
                  '08-uelHwf8o7_U',
                  '09-pRpeEdMmmQ0']
 
-    sources = ()
     X_pos_train = []
     X_neg_train = []
-    X_unsup = []
-
-    corpus_filelist = get_corpus_filelist()
-    logger.debug("YouTube corpus: {} videos".format(len(corpus_filelist)))
-
-    for video_title in corpus_filelist:
-
-        X_video_unsup = read_unlabeled_dataset(os.path.join('youtube-corpus', video_title))
-        X_unsup = np.concatenate((X_unsup, X_video_unsup))
-
-    sources += ((X_unsup, 'TRAIN_UNS'),)
 
     for video_title in file_list:
 
@@ -144,5 +132,9 @@ if __name__ == "__main__":
 
     sources += ((X_pos_train, 'TRAIN_POS'),
                 (X_neg_train, 'TRAIN_NEG'),)
-    
+
+    logger.info("Documents ready! Available sources: {}".format(len(sources)))
+    for base, label in sources:
+        logger.info("{}: {} documents".format(label, len(base)))
+
     doc2vec_vectorizer(sources)
