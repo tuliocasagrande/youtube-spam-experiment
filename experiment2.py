@@ -34,10 +34,10 @@ def exp2(filename):
     ]
 
     for clf_title, option in config:
-        y_true, y_pred, clf = option.classify(svm_grid)
+        y_true, y_pred = option.classify(svm_grid)
         scores_list.append((clf_title, calculate_scores(y_true, y_pred)))
         print clf_title
-        print_best_params(clf)
+        print_best_params(svm_grid)
 
     # ss_clf = LabelSpreading(kernel='rbf', gamma=1)
     ss_grid = GridSearchCV(LabelSpreading(kernel='rbf'), param_gamma, cv=10)

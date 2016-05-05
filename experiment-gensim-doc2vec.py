@@ -8,8 +8,6 @@ import unicodecsv as csv
 
 from gensim.models import Doc2Vec
 from gensim.models.doc2vec import TaggedDocument
-
-from nltk import word_tokenize as nltk_tokenizer
 from sklearn.feature_extraction.text import CountVectorizer
 
 from sklearn.ensemble import RandomForestClassifier
@@ -101,7 +99,6 @@ def doc2vec_vectorizer(X, y):
 
     model = Doc2Vec(sentences, min_count=1, iter=EPOCH, workers=2)
     model.save(os.path.join(MODELS_FOLDER, video_title + '.d2v'))
-    # model = Doc2Vec.load(os.path.join(MODELS_FOLDER, video_title + '.d2v'))
 
     vector_pos_train = [model.docvecs['TRAIN_POS_' + str(i)] for i in xrange(len(X_pos_train))]
     vector_neg_train = [model.docvecs['TRAIN_NEG_' + str(i)] for i in xrange(len(X_neg_train))]
@@ -123,13 +120,15 @@ def doc2vec_vectorizer(X, y):
     assert len(X_test) == len(y_test)
     return X_train, y_train, X_test, y_test
 
+
 def fit_and_predict(classifier, X_train, y_train, X_test):
 
     try:
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
     except TypeError:
-        import pdb; pdb.set_trace()
+        logger.debug("TypeError:")
+        logger.debug(TypeError)
         classifier.fit(X_train.toarray(), y_train)
         y_pred = classifier.predict(X_test.toarray())
 
@@ -139,8 +138,9 @@ def fit_and_predict(classifier, X_train, y_train, X_test):
 def get_best_params(classifier_title, classifier):
     if type(classifier) == GridSearchCV:
         best_parameters = classifier.best_estimator_.get_params()
-        return classifier_title + ' - ' + ', '.join(['{}: {}'.format(key, best_parameters[key])
-            for key in classifier.param_grid]) + '\n'
+        return classifier_title + ' - ' + ', '.join(
+            ['{}: {}'.format(key, best_parameters[key])
+             for key in classifier.param_grid]) + '\n'
 
 
 def run_classifiers(X_train, y_train, X_test, y_test):
@@ -209,10 +209,11 @@ if __name__ == "__main__":
                  '09-pRpeEdMmmQ0']
 
     csv_filename = os.path.join(results_path, 'results_mcc.csv')
-    clf_list = [#'MultinomialNB',
-                'BernoulliNB', 'GaussianNB', 'SVM Linear',
-                'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
-                'RandomForest', '1-NN', '3-NN', '5-NN']
+    clf_list = [
+        # 'MultinomialNB',
+        'BernoulliNB', 'GaussianNB', 'SVM Linear',
+        'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
+        'RandomForest', '1-NN', '3-NN', '5-NN']
     csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
 
     with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'w') as f:

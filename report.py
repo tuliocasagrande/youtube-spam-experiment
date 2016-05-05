@@ -1,11 +1,11 @@
 # This Python file uses the following encoding: utf-8
 
+import csv
+import numpy as np
+
 import matplotlib
 matplotlib.use('Agg')
-
-import csv
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 def tex_report(filename, video_title, scores_list):
@@ -70,7 +70,7 @@ def plot_roc(figurename, video_title, scores_list):
     for clf_title, scores in scores_list:
         plt.plot(
             scores['fpr'], scores['tpr'],
-            label=clf_title+' (1 - AUC = %0.2f)' % scores['roc_oneless_auc'])
+            label=clf_title + ' (1 - AUC = %0.2f)' % scores['roc_oneless_auc'])
 
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])

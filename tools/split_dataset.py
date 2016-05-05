@@ -10,7 +10,7 @@ def split(fileprefix):
     content_list = []
     label_list = []
 
-    with open(os.path.join('data_csv', fileprefix+'.csv'), 'rb') as csvfile:
+    with open(os.path.join('data_csv', fileprefix + '.csv'), 'rb') as csvfile:
         reader = csv.reader(csvfile)
         reader.next()  # Skipping the header
 
@@ -40,15 +40,15 @@ def split(fileprefix):
     assert(len(X_train) == len(y_train))
     assert(len(X_test) == len(y_test))
 
-    with open(os.path.join('data_split', fileprefix+'_train'), 'w') as f:
+    with open(os.path.join('data_split', fileprefix + '_train'), 'w') as f:
         for i in xrange(len(X_train)):
             f.write('{0},{1}\n'.format(y_train[i], X_train[i]))
 
-    with open(os.path.join('data_split', fileprefix+'_test'), 'w') as f:
+    with open(os.path.join('data_split', fileprefix + '_test'), 'w') as f:
         for each in X_test:
             f.write('{0}\n'.format(each))
 
-    with open(os.path.join('data_split', fileprefix+'_goldstandard'), 'w') as f:
+    with open(os.path.join('data_split', fileprefix + '_goldstandard'), 'w') as f:
         for each in y_test:
             f.write('{0}\n'.format(each))
 

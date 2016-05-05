@@ -1,15 +1,12 @@
 # This Python file uses the following encoding: utf-8
 
-from classification import calculate_scores
 import numpy as np
 import os
-import report
 import unicodecsv as csv
 
 from gensim.models import Doc2Vec
 from gensim.models.doc2vec import TaggedDocument
 
-from nltk import word_tokenize as nltk_tokenizer
 from sklearn.feature_extraction.text import CountVectorizer
 
 import logging
@@ -69,9 +66,8 @@ def split_dataset(X, y):
     return X_pos_train, X_neg_train, X_pos_test, X_neg_test
 
 
-def prepare_sentences(sources):
+def prepare_documents(sources):
     tokenizer = CountVectorizer().build_analyzer()
-    # tokenizer = nltk_tokenizer
     for base, label in sources:
         for idx, sample in enumerate(base):
             yield TaggedDocument(tokenizer(sample), ['{}_{}'.format(label, idx)])
@@ -79,9 +75,9 @@ def prepare_sentences(sources):
 
 def doc2vec_vectorizer(sources):
 
-    sentences = [sentence for sentence in prepare_sentences(sources)]
+    documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(sentences, min_count=1, iter=EPOCH, workers=2)
+    model = Doc2Vec(documents, size=100, window=5, min_count=1, iter=EPOCH)
     model.save(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
 
 

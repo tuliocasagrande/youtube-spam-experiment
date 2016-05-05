@@ -16,6 +16,7 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 logger = logging.getLogger()
 
+
 def exp1(filename):
 
     # Parameters for grid search
@@ -32,26 +33,30 @@ def exp1(filename):
     best_params = ''
 
     config = [
-        ('MultinomialNB', GridSearchCV(MultinomialNB(),
-         param_alpha, cv=10, scoring=mcc)),
-        ('BernoulliNB', GridSearchCV(BernoulliNB(),
-         param_alpha, cv=10, scoring=mcc)),
-        ('GaussianNB', GaussianNB()),
-        ('SVM Linear', GridSearchCV(LinearSVC(),
-         param_C, cv=10, scoring=mcc)),
-        ('SVM RBF', GridSearchCV(SVC(kernel='rbf'),
-         param_C_gamma, cv=10, scoring=mcc)),
-        ('SVM Poly', GridSearchCV(SVC(kernel='poly'),
-         param_C_gamma, cv=10, scoring=mcc)),
-        ('Logistic', GridSearchCV(LogisticRegression(),
-         param_C, cv=10, scoring=mcc)),
-        ('DecisionTree', GridSearchCV(DecisionTreeClassifier(random_state=0),
-         param_criterion, cv=10, scoring=mcc)),
-        ('RandomForest', GridSearchCV(RandomForestClassifier(random_state=0),
-         param_crit_nestim, cv=10, scoring=mcc)),
-        ('1-NN', KNeighborsClassifier(n_neighbors=1)),
-        ('3-NN', KNeighborsClassifier(n_neighbors=3)),
-        ('5-NN', KNeighborsClassifier(n_neighbors=5))
+        ('MultinomialNB',
+         GridSearchCV(MultinomialNB(), param_alpha, cv=10, scoring=mcc)),
+        ('BernoulliNB',
+         GridSearchCV(BernoulliNB(), param_alpha, cv=10, scoring=mcc)),
+        ('GaussianNB',
+         GaussianNB()),
+        ('SVM Linear',
+         GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)),
+        ('SVM RBF',
+         GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
+        ('SVM Poly',
+         GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
+        ('Logistic',
+         GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
+        ('DecisionTree',
+         GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
+        ('RandomForest',
+         GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
+        ('1-NN',
+         KNeighborsClassifier(n_neighbors=1)),
+        ('3-NN',
+         KNeighborsClassifier(n_neighbors=3)),
+        ('5-NN',
+         KNeighborsClassifier(n_neighbors=5))
     ]
 
     single_classification = SingleClassification(filename, train_percent=0.7)
@@ -70,8 +75,9 @@ def exp1(filename):
 def get_best_params(clf_title, classifier):
     if type(classifier) == GridSearchCV:
         best_parameters = classifier.best_estimator_.get_params()
-        return clf_title + ' - ' + ', '.join(['{}: {}'.format(key, best_parameters[key])
-            for key in classifier.param_grid]) + '\n'
+        return clf_title + ' - ' + ', '.join(
+            ['{}: {}'.format(key, best_parameters[key])
+             for key in classifier.param_grid]) + '\n'
 
 
 if __name__ == "__main__":

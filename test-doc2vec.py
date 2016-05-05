@@ -4,8 +4,6 @@ from classification import calculate_scores
 import numpy as np
 import os
 import report
-import unicodecsv as csv
-
 
 from gensim.models import Doc2Vec
 
@@ -38,7 +36,8 @@ def fit_and_predict(classifier, X_train, y_train, X_test):
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
     except TypeError:
-        import pdb; pdb.set_trace()
+        logger.debug("TypeError:")
+        logger.debug(TypeError)
         classifier.fit(X_train.toarray(), y_train)
         y_pred = classifier.predict(X_test.toarray())
 
@@ -48,8 +47,9 @@ def fit_and_predict(classifier, X_train, y_train, X_test):
 def get_best_params(classifier_title, classifier):
     if type(classifier) == GridSearchCV:
         best_parameters = classifier.best_estimator_.get_params()
-        return classifier_title + ' - ' + ', '.join(['{}: {}'.format(key, best_parameters[key])
-            for key in classifier.param_grid]) + '\n'
+        return classifier_title + ' - ' + ', '.join(
+            ['{}: {}'.format(key, best_parameters[key])
+             for key in classifier.param_grid]) + '\n'
 
 
 def run_classifiers(X_train, y_train, X_test, y_test):
@@ -109,7 +109,6 @@ def get_vecs(video_title, len_pos_test, len_neg_test):
 
     model = Doc2Vec.load(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
 
-
     vector_pos_train = [model.docvecs['TRAIN_POS_' + str(i)] for i in xrange(len_pos_train)]
     vector_neg_train = [model.docvecs['TRAIN_NEG_' + str(i)] for i in xrange(len_neg_train)]
     X_train = np.concatenate([vector_pos_train, vector_neg_train])
@@ -141,10 +140,11 @@ if __name__ == "__main__":
         os.makedirs(figures_path)
 
     csv_filename = os.path.join(results_path, 'results_mcc.csv')
-    clf_list = [#'MultinomialNB',
-                'BernoulliNB', 'GaussianNB', 'SVM Linear',
-                'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
-                'RandomForest', '1-NN', '3-NN', '5-NN']
+    clf_list = [
+        # 'MultinomialNB',
+        'BernoulliNB', 'GaussianNB', 'SVM Linear',
+        'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
+        'RandomForest', '1-NN', '3-NN', '5-NN']
     csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
 
     with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'w') as f:

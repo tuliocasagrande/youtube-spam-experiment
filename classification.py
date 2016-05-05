@@ -64,8 +64,8 @@ class SingleClassification(BaseClassification):
             train_index_spam = int(len(self.X_spam) * train_percent)
             train_index_ham = int(len(self.X_ham) * train_percent)
 
-            test_index_spam = int(len(self.X_spam) * (1-test_percent))
-            test_index_ham = int(len(self.X_ham) * (1-test_percent))
+            test_index_spam = int(len(self.X_spam) * (1 - test_percent))
+            test_index_ham = int(len(self.X_ham) * (1 - test_percent))
 
             self.X_train = np.concatenate([self.X_spam[:train_index_spam],
                                            self.X_ham[:train_index_ham]])
@@ -78,7 +78,7 @@ class SingleClassification(BaseClassification):
                                           self.y_ham[test_index_ham:]])
         else:
             train_index = int(len(self.X) * train_percent)
-            test_index = int(len(self.X) * (1-test_percent))
+            test_index = int(len(self.X) * (1 - test_percent))
 
             self.X_train = self.X[:train_index]
             self.y_train = self.y[:train_index]
@@ -121,8 +121,8 @@ class DualClassification(BaseClassification):
             train_index_spam = int(len(self.X_spam) * train_percent)
             train_index_ham = int(len(self.X_ham) * train_percent)
 
-            ss_index_spam = int(len(self.X_spam) * (train_percent+ss_percent))
-            ss_index_ham = int(len(self.X_ham) * (train_percent+ss_percent))
+            ss_index_spam = int(len(self.X_spam) * (train_percent + ss_percent))
+            ss_index_ham = int(len(self.X_ham) * (train_percent + ss_percent))
 
             self.X_train = np.concatenate([self.X_spam[:train_index_spam],
                                            self.X_ham[:train_index_ham]])
@@ -142,7 +142,7 @@ class DualClassification(BaseClassification):
                                           self.y_ham[ss_index_ham:]])
         else:
             train_index = int(len(self.X) * train_percent)
-            ss_index = int(len(self.X) * (train_percent+ss_percent))
+            ss_index = int(len(self.X) * (train_percent + ss_percent))
 
             self.X_train = self.X[:train_index]
             self.y_train = self.y[:train_index]

@@ -9,7 +9,7 @@ def convert(fileprefix):
     content_list = []
     label_list = []
 
-    with open(os.path.join('data_csv', fileprefix+'.csv'), 'rb') as csvfile:
+    with open(os.path.join('data_csv', fileprefix + '.csv'), 'rb') as csvfile:
         reader = csv.reader(csvfile)
         reader.next()  # Skipping the header
 
@@ -28,7 +28,7 @@ def convert(fileprefix):
 
     assert len(bow_array) == len(y)
 
-    with open(os.path.join('data_bow', fileprefix+'-bow.csv'), 'wb') as csvfile:
+    with open(os.path.join('data_bow', fileprefix + '-bow.csv'), 'wb') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(header)
 
@@ -36,7 +36,7 @@ def convert(fileprefix):
             writer.writerow(np.concatenate((row, [y[i]])))
 
     print 'Dataset:', fileprefix
-    print '# tokens:', len(header)-1
+    print '# tokens:', len(header) - 1
     print '# samples:', len(y)
 
 
