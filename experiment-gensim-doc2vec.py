@@ -76,9 +76,8 @@ def split_dataset(X, y):
     return X_pos_train, X_neg_train, X_pos_test, X_neg_test
 
 
-def prepare_sentences(sources):
+def prepare_documents(sources):
     tokenizer = CountVectorizer().build_analyzer()
-    # tokenizer = nltk_tokenizer
     for base, label in sources:
         for idx, sample in enumerate(base):
             yield TaggedDocument(tokenizer(sample), ['{}_{}'.format(label, idx)])
@@ -95,9 +94,9 @@ def doc2vec_vectorizer(X, y):
         (X_neg_test, 'TEST_NEG'),
     )
 
-    sentences = [sentence for sentence in prepare_sentences(sources)]
+    documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(sentences, min_count=1, iter=EPOCH, workers=2)
+    model = Doc2Vec(documents, size=100, window=5, min_count=1, iter=EPOCH)
     model.save(os.path.join(MODELS_FOLDER, video_title + '.d2v'))
 
     vector_pos_train = [model.docvecs['TRAIN_POS_' + str(i)] for i in xrange(len(X_pos_train))]
@@ -159,26 +158,30 @@ def run_classifiers(X_train, y_train, X_test, y_test):
     best_params = ''
 
     config = [
-        # ('MultinomialNB', GridSearchCV(MultinomialNB(),
-        #  param_alpha, cv=10, scoring=mcc)),
-        ('BernoulliNB', GridSearchCV(BernoulliNB(),
-         param_alpha, cv=10, scoring=mcc)),
-        ('GaussianNB', GaussianNB()),
-        ('SVM Linear', GridSearchCV(LinearSVC(),
-         param_C, cv=10, scoring=mcc)),
-        ('SVM RBF', GridSearchCV(SVC(kernel='rbf'),
-         param_C_gamma, cv=10, scoring=mcc)),
-        ('SVM Poly', GridSearchCV(SVC(kernel='poly'),
-         param_C_gamma, cv=10, scoring=mcc)),
-        ('Logistic', GridSearchCV(LogisticRegression(),
-         param_C, cv=10, scoring=mcc)),
-        ('DecisionTree', GridSearchCV(DecisionTreeClassifier(random_state=0),
-         param_criterion, cv=10, scoring=mcc)),
-        ('RandomForest', GridSearchCV(RandomForestClassifier(random_state=0),
-         param_crit_nestim, cv=10, scoring=mcc)),
-        ('1-NN', KNeighborsClassifier(n_neighbors=1)),
-        ('3-NN', KNeighborsClassifier(n_neighbors=3)),
-        ('5-NN', KNeighborsClassifier(n_neighbors=5))
+        # ('MultinomialNB',
+        #  GridSearchCV(MultinomialNB(), param_alpha, cv=10, scoring=mcc)),
+        ('BernoulliNB',
+         GridSearchCV(BernoulliNB(), param_alpha, cv=10, scoring=mcc)),
+        ('GaussianNB',
+         GaussianNB()),
+        ('SVM Linear',
+         GridSearchCV(LinearSVC(), param_C, cv=10, scoring=mcc)),
+        ('SVM RBF',
+         GridSearchCV(SVC(kernel='rbf'), param_C_gamma, cv=10, scoring=mcc)),
+        ('SVM Poly',
+         GridSearchCV(SVC(kernel='poly'), param_C_gamma, cv=10, scoring=mcc)),
+        ('Logistic',
+         GridSearchCV(LogisticRegression(), param_C, cv=10, scoring=mcc)),
+        ('DecisionTree',
+         GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
+        ('RandomForest',
+         GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
+        ('1-NN',
+         KNeighborsClassifier(n_neighbors=1)),
+        ('3-NN',
+         KNeighborsClassifier(n_neighbors=3)),
+        ('5-NN',
+         KNeighborsClassifier(n_neighbors=5))
     ]
 
     for classifier_title, classifier in config:
