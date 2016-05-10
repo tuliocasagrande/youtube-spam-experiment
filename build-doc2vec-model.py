@@ -2,6 +2,7 @@
 
 import numpy as np
 import os
+import random
 import unicodecsv as csv
 
 from gensim.models import Doc2Vec
@@ -22,6 +23,7 @@ if not os.path.exists(MODELS_FOLDER):
 
 
 EPOCH = 1000
+random.seed(1)  # for reproducibility
 
 
 def get_corpus_file_list():
@@ -32,7 +34,6 @@ def read_dataset(filename):
     content_list = []
     label_list = []
 
-    # Reading and parsing CSV file
     with open(filename, 'rb') as csvfile:
         reader = csv.reader(csvfile)
         reader.next()  # Skipping the header
@@ -50,7 +51,6 @@ def read_dataset(filename):
 def read_unlabeled_dataset(filename):
     content_list = []
 
-    # Reading and parsing CSV file
     with open(filename, 'rb') as csvfile:
         reader = csv.reader(csvfile)
         reader.next()  # Skipping the header
@@ -92,7 +92,13 @@ def doc2vec_vectorizer(sources):
 
     documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(documents, size=100, window=5, min_count=1, iter=EPOCH)
+    model = Doc2Vec(size=100, window=5, min_count=1, iter=1, seed=1, workers=1)
+    model.build_vocab(documents)
+
+    for epoch in range(EPOCH):
+        logger.info('EPOCH: {}'.format(epoch))
+        model.train(sorted(documents, key=lambda x: random.random()))
+
     model.save(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
 
 
@@ -116,22 +122,15 @@ if __name__ == "__main__":
                  '08-uelHwf8o7_U',
                  '09-pRpeEdMmmQ0']
 
-    X_pos_train = []
-    X_neg_train = []
-
     for video_title in file_list:
 
         X, y = read_dataset(os.path.join('data_csv', video_title + '.csv'))
-        X_pos_video_train, X_neg_video_train, X_pos_test, X_neg_test = split_dataset(X, y)
+        X_pos_train, X_neg_train, X_pos_test, X_neg_test = split_dataset(X, y)
 
-        X_pos_train = np.concatenate((X_pos_train, X_pos_video_train))
-        X_neg_train = np.concatenate((X_neg_train, X_neg_video_train))
-
-        sources += ((X_pos_test, 'TEST_POS_' + video_title),
+        sources += ((X_pos_train, 'TRAIN_POS_' + video_title),
+                    (X_neg_train, 'TRAIN_NEG_' + video_title),
+                    (X_pos_test, 'TEST_POS_' + video_title),
                     (X_neg_test, 'TEST_NEG_' + video_title),)
-
-    sources += ((X_pos_train, 'TRAIN_POS'),
-                (X_neg_train, 'TRAIN_NEG'),)
 
     logger.info("Documents ready! Available sources: {}".format(len(sources)))
 

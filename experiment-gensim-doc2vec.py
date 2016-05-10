@@ -3,6 +3,7 @@
 from classification import calculate_scores
 import numpy as np
 import os
+import random
 import report
 import unicodecsv as csv
 
@@ -34,6 +35,7 @@ if not os.path.exists(MODELS_FOLDER):
 
 
 EPOCH = 5000
+random.seed(1)  # for reproducibility
 
 
 def read_dataset(video_title):
@@ -96,7 +98,13 @@ def doc2vec_vectorizer(X, y):
 
     documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(documents, size=100, window=5, min_count=1, iter=EPOCH)
+    model = Doc2Vec(size=100, window=5, min_count=1, iter=1, seed=1, workers=1)
+    model.build_vocab(documents)
+
+    for epoch in range(EPOCH):
+        logger.info('EPOCH: {}'.format(epoch))
+        model.train(sorted(documents, key=lambda x: random.random()))
+
     model.save(os.path.join(MODELS_FOLDER, video_title + '.d2v'))
 
     vector_pos_train = [model.docvecs['TRAIN_POS_' + str(i)] for i in xrange(len(X_pos_train))]

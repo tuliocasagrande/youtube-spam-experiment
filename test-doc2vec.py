@@ -106,15 +106,28 @@ def run_classifiers(X_train, y_train, X_test, y_test):
     return scores_list, best_params
 
 
-def get_vecs(video_title, len_pos_test, len_neg_test):
+def load_labels():
+    labels = {}
 
-    len_pos_train = 701
-    len_neg_train = 664
+    with open('doc2vec-labels.txt') as f:
+        for line in f:
+            label, samples_number = line.split(":")
+            labels[label] = int(samples_number)
+
+    return labels
+
+
+def get_vecs(video_title, labels):
+
+    len_pos_train = labels['TRAIN_POS_' + video_title]
+    len_neg_train = labels['TRAIN_NEG_' + video_title]
+    len_pos_test = labels['TEST_POS_' + video_title]
+    len_neg_test = labels['TEST_NEG_' + video_title]
 
     model = Doc2Vec.load(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
 
-    vector_pos_train = [model.docvecs['TRAIN_POS_' + str(i)] for i in xrange(len_pos_train)]
-    vector_neg_train = [model.docvecs['TRAIN_NEG_' + str(i)] for i in xrange(len_neg_train)]
+    vector_pos_train = [model.docvecs['TRAIN_POS_{}_{}'.format(video_title, i)] for i in xrange(len_pos_train)]
+    vector_neg_train = [model.docvecs['TRAIN_NEG_{}_{}'.format(video_title, i)] for i in xrange(len_neg_train)]
     X_train = np.concatenate([vector_pos_train, vector_neg_train])
 
     label_pos_train = [1 for i in xrange(len_pos_train)]
@@ -154,16 +167,18 @@ if __name__ == "__main__":
     with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'w') as f:
         f.write('Best Parameters\n')
 
-    file_list = [('01-9bZkp7q19f0', 53, 53),
-                 ('04-CevxZvSJLk8', 53, 53),
-                 ('07-KQ6zr6kCPj8', 71, 61),
-                 ('08-uelHwf8o7_U', 74, 61),
-                 ('09-pRpeEdMmmQ0', 53, 59)]
+    file_list = [('01-9bZkp7q19f0'),
+                 ('04-CevxZvSJLk8'),
+                 ('07-KQ6zr6kCPj8'),
+                 ('08-uelHwf8o7_U'),
+                 ('09-pRpeEdMmmQ0')]
 
-    for video_title, len_pos_test, len_neg_test in file_list:
+    labels = load_labels()
+
+    for video_title in file_list:
         logger.info("TRAINING VIDEO " + video_title)
 
-        X_train, y_train, X_test, y_test = get_vecs(video_title, len_pos_test, len_neg_test)
+        X_train, y_train, X_test, y_test = get_vecs(video_title, labels)
         scores_list, best_params = run_classifiers(X_train, y_train, X_test, y_test)
 
         with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'a') as f:
