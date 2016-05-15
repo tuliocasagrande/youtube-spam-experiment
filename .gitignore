@@ -54,3 +54,4 @@ docs/_build/
 target/
 
 *.pdf
+doc2vec-models/

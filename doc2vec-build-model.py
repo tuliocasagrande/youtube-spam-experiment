@@ -17,7 +17,7 @@ EXPERIMENT_FOLDER = 'exp-doc2vec'
 if not os.path.exists(EXPERIMENT_FOLDER):
     os.makedirs(EXPERIMENT_FOLDER)
 
-MODELS_FOLDER = 'doc2vec_models'
+MODELS_FOLDER = 'doc2vec-models'
 if not os.path.exists(MODELS_FOLDER):
     os.makedirs(MODELS_FOLDER)
 
