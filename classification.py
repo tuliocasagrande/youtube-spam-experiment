@@ -2,7 +2,6 @@
 
 import csv
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import (
     accuracy_score,
     cohen_kappa_score,
@@ -53,7 +52,7 @@ class SingleClassification(BaseClassification):
         The dataset must be ordered by date (first = oldest)
     """
 
-    def __init__(self, filename, train_percent=0.7, test_percent=None,
+    def __init__(self, filename, vectorizer, train_percent=0.7, test_percent=None,
                  stratified=True):
         super(SingleClassification, self).__init__(filename, stratified)
 
@@ -86,7 +85,6 @@ class SingleClassification(BaseClassification):
             self.y_test = self.y[test_index:]
 
         # Preparing bag of words
-        vectorizer = CountVectorizer()
         self.bow_train = vectorizer.fit_transform(self.X_train)
         self.bow_test = vectorizer.transform(self.X_test)
 

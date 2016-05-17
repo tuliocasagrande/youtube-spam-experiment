@@ -4,6 +4,7 @@ from classification import calculate_scores, SingleClassification
 import os
 import report
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import CountVectorizer as vectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import make_scorer, matthews_corrcoef
@@ -59,7 +60,7 @@ def exp1(filename):
          KNeighborsClassifier(n_neighbors=5))
     ]
 
-    single_classification = SingleClassification(filename, train_percent=0.7)
+    single_classification = SingleClassification(filename, vectorizer(), train_percent=0.7)
     for classifier_title, classifier in config:
         logger.info("Fitting " + classifier_title)
 
@@ -81,7 +82,7 @@ def get_best_params(clf_title, classifier):
 
 
 if __name__ == "__main__":
-    EXPERIMENT_FOLDER = 'exp1'
+    EXPERIMENT_FOLDER = 'exp1_count'
     results_path = os.path.join(EXPERIMENT_FOLDER, 'results')
     figures_path = os.path.join(EXPERIMENT_FOLDER, 'figures')
 
