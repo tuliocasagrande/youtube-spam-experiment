@@ -20,7 +20,8 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 logger = logging.getLogger()
 
-EXPERIMENT_FOLDER = 'exp-doc2vec-corpus'
+MODEL = 'pv-dbow-s300'
+EXPERIMENT_FOLDER = 'exp-doc2vec-' + MODEL
 if not os.path.exists(EXPERIMENT_FOLDER):
     os.makedirs(EXPERIMENT_FOLDER)
 
@@ -124,7 +125,7 @@ def get_vecs(video_title, labels):
     len_pos_test = labels['TEST_POS_' + video_title]
     len_neg_test = labels['TEST_NEG_' + video_title]
 
-    model = Doc2Vec.load(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
+    model = Doc2Vec.load(os.path.join(MODELS_FOLDER, MODEL + '.d2v'))
 
     vector_pos_train = [model.docvecs['TRAIN_POS_{}_{}'.format(video_title, i)] for i in xrange(len_pos_train)]
     vector_neg_train = [model.docvecs['TRAIN_NEG_{}_{}'.format(video_title, i)] for i in xrange(len_neg_train)]

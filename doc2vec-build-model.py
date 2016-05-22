@@ -22,7 +22,7 @@ if not os.path.exists(MODELS_FOLDER):
     os.makedirs(MODELS_FOLDER)
 
 
-EPOCH = 1000
+EPOCH = 500
 random.seed(1)  # for reproducibility
 
 
@@ -88,18 +88,17 @@ def prepare_documents(sources):
             yield TaggedDocument(tokenizer(sample), ['{}_{}'.format(label, idx)])
 
 
-def doc2vec_vectorizer(sources):
+def doc2vec_vectorizer(sources, model_name, model):
 
     documents = [document for document in prepare_documents(sources)]
 
-    model = Doc2Vec(size=100, window=5, min_count=1, iter=1, seed=1, workers=1)
     model.build_vocab(documents)
 
     for epoch in range(EPOCH):
         logger.info('EPOCH: {}'.format(epoch))
         model.train(sorted(documents, key=lambda x: random.random()))
 
-    model.save(os.path.join(MODELS_FOLDER, 'corpus.d2v'))
+    model.save(os.path.join(MODELS_FOLDER, model_name))
 
 
 if __name__ == "__main__":
@@ -138,4 +137,12 @@ if __name__ == "__main__":
         for base, label in sources:
             f.write("{}: {}\n".format(label, len(base)))
 
-    doc2vec_vectorizer(sources)
+    models = [
+        ('pv-dbow-s100.d2v',
+         Doc2Vec(dm=0, window=5, size=100, negative=5, hs=0, min_count=1, workers=1, iter=1, seed=1)),
+        ('pv-dbow-s300.d2v',
+         Doc2Vec(dm=0, window=5, size=300, negative=5, hs=0, min_count=1, workers=1, iter=1, seed=1)),
+    ]
+
+    for model_name, model in models:
+        doc2vec_vectorizer(sources, model_name, model)
