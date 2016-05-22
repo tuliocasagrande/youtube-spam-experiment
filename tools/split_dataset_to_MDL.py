@@ -2,6 +2,7 @@ import csv
 import numpy as np
 import os
 
+DATA_FOLDER = 'data_MDL'
 
 # This is a chronologically sorted stratified holdout 70/30
 # 70% for training and 30% for testing
@@ -40,23 +41,23 @@ def split(fileprefix):
     assert(len(X_train) == len(y_train))
     assert(len(X_test) == len(y_test))
 
-    with open(os.path.join('data_split', fileprefix + '_train'), 'w') as f:
+    with open(os.path.join(DATA_FOLDER, fileprefix + '_train'), 'w') as f:
         for i in xrange(len(X_train)):
             f.write('{0},{1}\n'.format(y_train[i], X_train[i]))
 
-    with open(os.path.join('data_split', fileprefix + '_test'), 'w') as f:
+    with open(os.path.join(DATA_FOLDER, fileprefix + '_test'), 'w') as f:
         for each in X_test:
             f.write('{0}\n'.format(each))
 
-    with open(os.path.join('data_split', fileprefix + '_goldstandard'), 'w') as f:
+    with open(os.path.join(DATA_FOLDER, fileprefix + '_goldstandard'), 'w') as f:
         for each in y_test:
             f.write('{0}\n'.format(each))
 
 
 if __name__ == '__main__':
 
-    if not os.path.exists('data_split'):
-        os.makedirs('data_split')
+    if not os.path.exists(DATA_FOLDER):
+        os.makedirs(DATA_FOLDER)
 
     file_list = ['01-9bZkp7q19f0',
                  '04-CevxZvSJLk8',
