@@ -1,6 +1,5 @@
 # This Python file uses the following encoding: utf-8
 
-from classification import calculate_scores
 import numpy as np
 import os
 import report
@@ -20,15 +19,13 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 logger = logging.getLogger()
 
-MODEL = 'pv-dbow-s300'
+MODEL = 'pv-dbow-s100'
 EXPERIMENT_FOLDER = 'exp-doc2vec-' + MODEL
 if not os.path.exists(EXPERIMENT_FOLDER):
     os.makedirs(EXPERIMENT_FOLDER)
 
 
 MODELS_FOLDER = 'doc2vec-models'
-if not os.path.exists(MODELS_FOLDER):
-    os.makedirs(MODELS_FOLDER)
 
 
 def fit_and_predict(classifier, X_train, y_train, X_test):
@@ -99,7 +96,7 @@ def run_classifiers(X_train, y_train, X_test, y_test):
         logger.info("Fitting " + classifier_title)
 
         y_pred = fit_and_predict(classifier, X_train, y_train, X_test)
-        scores_list.append((classifier_title, calculate_scores(y_test, y_pred)))
+        scores_list.append((classifier_title, report.calculate_scores(y_test, y_pred)))
         best_params += get_best_params(classifier_title, classifier) or ''
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),

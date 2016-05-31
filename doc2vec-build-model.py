@@ -13,72 +13,23 @@ import logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 logger = logging.getLogger()
 
-EXPERIMENT_FOLDER = 'exp-doc2vec'
-if not os.path.exists(EXPERIMENT_FOLDER):
-    os.makedirs(EXPERIMENT_FOLDER)
-
 MODELS_FOLDER = 'doc2vec-models'
 if not os.path.exists(MODELS_FOLDER):
     os.makedirs(MODELS_FOLDER)
 
 
-EPOCH = 500
+EPOCH = 100
 random.seed(1)  # for reproducibility
 
 
-def get_corpus_file_list():
-    return [corpus_file for corpus_file in os.listdir("youtube-corpus") if corpus_file.endswith(".csv")]
+def read_dataset(src_folder, video_title):
 
+    pos_train = open(os.path.join(src_folder, video_title + '-pos-train.txt')).readlines()
+    neg_train = open(os.path.join(src_folder, video_title + '-neg-train.txt')).readlines()
+    pos_test = open(os.path.join(src_folder, video_title + '-pos-test.txt')).readlines()
+    neg_test = open(os.path.join(src_folder, video_title + '-neg-test.txt')).readlines()
 
-def read_dataset(filename):
-    content_list = []
-    label_list = []
-
-    with open(filename, 'rb') as csvfile:
-        reader = csv.reader(csvfile)
-        reader.next()  # Skipping the header
-
-        for row in reader:
-            content_list.append(row[3])
-            label_list.append(int(row[4]))
-
-    X = np.asarray(content_list)
-    y = np.asarray(label_list)
-
-    return X, y
-
-
-def read_unlabeled_dataset(filename):
-    content_list = []
-
-    with open(filename, 'rb') as csvfile:
-        reader = csv.reader(csvfile)
-        reader.next()  # Skipping the header
-
-        for row in reader:
-            content_list.append(row[4])
-
-    X = np.asarray(content_list)
-
-    return X
-
-
-def split_dataset(X, y, train_percent=0.7):
-
-    assert(len(X) == len(y))
-    X_pos = X[y == 1]
-    X_neg = X[y == 0]
-
-    index_pos_train = int(len(X_pos) * train_percent)
-    index_neg_train = int(len(X_neg) * train_percent)
-
-    X_pos_train = X_pos[:index_pos_train]
-    X_neg_train = X_neg[:index_neg_train]
-
-    X_pos_test = X_pos[index_pos_train:]
-    X_neg_test = X_neg[index_neg_train:]
-
-    return X_pos_train, X_neg_train, X_pos_test, X_neg_test
+    return pos_train, neg_train, pos_test, neg_test
 
 
 def prepare_documents(sources):
@@ -103,16 +54,10 @@ def doc2vec_vectorizer(sources, model_name, model):
 
 if __name__ == "__main__":
 
+    SRC_FOLDER = 'data_split'
     sources = ()
-    X_unsup = []
 
-    corpus_file_list = get_corpus_file_list()
-    logger.info("YouTube corpus: {} videos".format(len(corpus_file_list)))
-
-    for corpus_file in corpus_file_list:
-        X_video_unsup = read_unlabeled_dataset(os.path.join('youtube-corpus', corpus_file))
-        X_unsup = np.concatenate((X_unsup, X_video_unsup))
-
+    X_unsup = open(os.path.join(SRC_FOLDER, 'unsup.txt')).readlines()
     sources += ((X_unsup, 'TRAIN_UNS'),)
 
     file_list = ['01-9bZkp7q19f0',
@@ -123,13 +68,12 @@ if __name__ == "__main__":
 
     for video_title in file_list:
 
-        X, y = read_dataset(os.path.join('data_csv', video_title + '.csv'))
-        X_pos_train, X_neg_train, X_pos_test, X_neg_test = split_dataset(X, y)
+        pos_train, neg_train, pos_test, neg_test = read_dataset(SRC_FOLDER, video_title)
 
-        sources += ((X_pos_train, 'TRAIN_POS_' + video_title),
-                    (X_neg_train, 'TRAIN_NEG_' + video_title),
-                    (X_pos_test, 'TEST_POS_' + video_title),
-                    (X_neg_test, 'TEST_NEG_' + video_title),)
+        sources += ((pos_train, 'TRAIN_POS_' + video_title),
+                    (neg_train, 'TRAIN_NEG_' + video_title),
+                    (pos_test, 'TEST_POS_' + video_title),
+                    (neg_test, 'TEST_NEG_' + video_title),)
 
     logger.info("Documents ready! Available sources: {}".format(len(sources)))
 
