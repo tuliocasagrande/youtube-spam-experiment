@@ -1,0 +1,61 @@
+Best Parameters
+
+##############
+01-9bZkp7q19f0
+
+MultinomialNB - alpha: 10.0
+BernoulliNB - alpha: 1.0
+SVM Linear - C: 0.01
+SVM RBF - C: 1000.0, gamma: 0.001
+SVM Poly - C: 1e-05, gamma: 10.0
+Logistic - C: 1.0
+DecisionTree - criterion: entropy
+RandomForest - n_estimators: 60, criterion: entropy
+
+##############
+04-CevxZvSJLk8
+
+MultinomialNB - alpha: 1.0
+BernoulliNB - alpha: 0.01
+SVM Linear - C: 10.0
+SVM RBF - C: 1000.0, gamma: 0.001
+SVM Poly - C: 1e-05, gamma: 100.0
+Logistic - C: 100.0
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 20, criterion: entropy
+
+##############
+07-KQ6zr6kCPj8
+
+MultinomialNB - alpha: 0.001
+BernoulliNB - alpha: 0.01
+SVM Linear - C: 1.0
+SVM RBF - C: 10.0, gamma: 0.01
+SVM Poly - C: 1e-05, gamma: 100.0
+Logistic - C: 1.0
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 50, criterion: gini
+
+##############
+08-uelHwf8o7_U
+
+MultinomialNB - alpha: 0.1
+BernoulliNB - alpha: 1e-05
+SVM Linear - C: 0.01
+SVM RBF - C: 1000.0, gamma: 0.001
+SVM Poly - C: 1e-05, gamma: 100.0
+Logistic - C: 1.0
+DecisionTree - criterion: entropy
+RandomForest - n_estimators: 70, criterion: gini
+
+##############
+09-pRpeEdMmmQ0
+
+MultinomialNB - alpha: 0.01
+BernoulliNB - alpha: 0.001
+SVM Linear - C: 0.1
+SVM RBF - C: 1000.0, gamma: 0.001
+SVM Poly - C: 1e-05, gamma: 100.0
+Logistic - C: 1.0
+DecisionTree - criterion: gini
+RandomForest - n_estimators: 100, criterion: gini

@@ -4,7 +4,7 @@ from classification import SingleClassification
 import os
 import report
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import make_scorer, matthews_corrcoef
@@ -60,7 +60,7 @@ def run_experiment(src_folder, video_title):
          KNeighborsClassifier(n_neighbors=5))
     ]
 
-    single_classification = SingleClassification(src_folder, video_title, CountVectorizer())
+    single_classification = SingleClassification(src_folder, video_title, TfidfVectorizer(use_idf=False))
     for classifier_title, classifier in config:
         logger.info("Fitting " + classifier_title)
 
@@ -82,8 +82,8 @@ def get_best_params(clf_title, classifier):
 
 
 if __name__ == "__main__":
-    EXPERIMENT_FOLDER = 'exp1_count'
-    SRC_FOLDER = 'data_split'
+    EXPERIMENT_FOLDER = 'exp1_tf_normalized'
+    SRC_FOLDER = 'data_split_normalized'
 
     results_path = os.path.join(EXPERIMENT_FOLDER, 'results')
     figures_path = os.path.join(EXPERIMENT_FOLDER, 'figures')
