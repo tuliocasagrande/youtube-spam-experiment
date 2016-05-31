@@ -7,6 +7,51 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+from sklearn.metrics import (
+    accuracy_score,
+    cohen_kappa_score,
+    f1_score,
+    matthews_corrcoef,
+    roc_auc_score,
+    roc_curve
+)
+
+
+def calculate_scores(y_true, y_pred):
+
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    # Ensure that the lists are both the same length
+    assert(len(y_true) == len(y_pred))
+
+    scores = {}
+    scores['tp'] = tp = sum((y_true == y_pred) & (y_true == 1))
+    scores['tn'] = tn = sum((y_true == y_pred) & (y_true == 0))
+    scores['fp'] = fp = sum((y_true != y_pred) & (y_true == 0))
+    scores['fn'] = fn = sum((y_true != y_pred) & (y_true == 1))
+
+    scores['acc'] = accuracy_score(y_true, y_pred)
+    scores['f1'] = f1_score(y_true, y_pred)
+    scores['mcc'] = matthews_corrcoef(y_true, y_pred)
+    scores['kappa'] = cohen_kappa_score(y_true, y_pred)
+
+    try:
+        scores['sc'] = float(tp) / (tp + fn)
+    except ZeroDivisionError:
+        scores['sc'] = 0
+
+    try:
+        scores['bh'] = float(fp) / (fp + tn)
+    except ZeroDivisionError:
+        scores['bh'] = 0
+
+    # Compute ROC curve and ROC area
+    scores['fpr'], scores['tpr'], _ = roc_curve(y_true, y_pred)
+    scores['roc_oneless_auc'] = 1 - roc_auc_score(y_true, y_pred)
+
+    return scores
+
 
 def tex_report(filename, video_title, scores_list):
     caption = 'Resultados dos métodos de aprendizado de máquina para o ' \

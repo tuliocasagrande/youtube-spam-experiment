@@ -1,10 +1,10 @@
 # This Python file uses the following encoding: utf-8
 
-from classification import calculate_scores, SingleClassification
+from classification import SingleClassification
 import os
 import report
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer as vectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import make_scorer, matthews_corrcoef
@@ -18,7 +18,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 logger = logging.getLogger()
 
 
-def exp1(filename):
+def run_experiment(src_folder, video_title):
 
     # Parameters for grid search
     range5 = [10.0 ** i for i in range(-5, 5)]
@@ -60,12 +60,12 @@ def exp1(filename):
          KNeighborsClassifier(n_neighbors=5))
     ]
 
-    single_classification = SingleClassification(filename, vectorizer(use_idf=False), train_percent=0.7)
+    single_classification = SingleClassification(src_folder, video_title, CountVectorizer())
     for classifier_title, classifier in config:
         logger.info("Fitting " + classifier_title)
 
         y_true, y_pred = single_classification.classify(classifier)
-        scores_list.append((classifier_title, calculate_scores(y_true, y_pred)))
+        scores_list.append((classifier_title, report.calculate_scores(y_true, y_pred)))
         best_params += get_best_params(classifier_title, classifier) or ''
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),
@@ -82,7 +82,9 @@ def get_best_params(clf_title, classifier):
 
 
 if __name__ == "__main__":
-    EXPERIMENT_FOLDER = 'exp1_tf'
+    EXPERIMENT_FOLDER = 'exp1_count'
+    SRC_FOLDER = 'data_split'
+
     results_path = os.path.join(EXPERIMENT_FOLDER, 'results')
     figures_path = os.path.join(EXPERIMENT_FOLDER, 'figures')
 
@@ -108,7 +110,7 @@ if __name__ == "__main__":
 
     for video_title in file_list:
         logger.info("TRAINING VIDEO " + video_title)
-        scores_list, best_params = exp1(os.path.join('data_csv', video_title + '.csv'))
+        scores_list, best_params = run_experiment(SRC_FOLDER, video_title)
 
         with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'a') as f:
             f.write('\n##############\n')
