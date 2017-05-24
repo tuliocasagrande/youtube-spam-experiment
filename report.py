@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
+import os
 import csv
 import numpy as np
 
@@ -26,10 +27,13 @@ def calculate_scores(y_true, y_pred):
     assert(len(y_true) == len(y_pred))
 
     scores = {}
-    scores['tp'] = tp = sum((y_true == y_pred) & (y_true == 1))
-    scores['tn'] = tn = sum((y_true == y_pred) & (y_true == 0))
-    scores['fp'] = fp = sum((y_true != y_pred) & (y_true == 0))
-    scores['fn'] = fn = sum((y_true != y_pred) & (y_true == 1))
+    scores['tp'] = sum((y_true == y_pred) & (y_true == 1))
+    scores['tn'] = sum((y_true == y_pred) & (y_true == 0))
+    scores['fp'] = sum((y_true != y_pred) & (y_true == 0))
+    scores['fn'] = sum((y_true != y_pred) & (y_true == 1))
+
+    scores['p'] = sum(y_true == 1)
+    scores['n'] = sum(y_true == 0)
 
     scores['acc'] = accuracy_score(y_true, y_pred)
     scores['f1'] = f1_score(y_true, y_pred)
@@ -37,20 +41,37 @@ def calculate_scores(y_true, y_pred):
     scores['kappa'] = cohen_kappa_score(y_true, y_pred)
 
     try:
-        scores['sc'] = float(tp) / (tp + fn)
+        scores['sc'] = float(scores['tp']) / (scores['tp'] + scores['fn'])
     except ZeroDivisionError:
         scores['sc'] = 0
 
     try:
-        scores['bh'] = float(fp) / (fp + tn)
+        scores['bh'] = float(scores['fp']) / (scores['fp'] + scores['tn'])
     except ZeroDivisionError:
         scores['bh'] = 0
 
     # Compute ROC curve and ROC area
-    scores['fpr'], scores['tpr'], _ = roc_curve(y_true, y_pred)
-    scores['roc_oneless_auc'] = 1 - roc_auc_score(y_true, y_pred)
+    # TODO roc_curve doesn't accept y_pred, but y_proba
+    # scores['fpr'], scores['tpr'], _ = roc_curve(y_true, y_pred)
+    # scores['roc_oneless_auc'] = 1 - roc_auc_score(y_true, y_pred)
 
     return scores
+
+
+def csv_report(path, video_title, scores_list):
+
+    filename = os.path.join(path, video_title + '.csv')
+    with open(filename, 'w') as f:
+        header = ['Classifier', 'Accuracy', 'Spam Caught (%)', 'Blocked Ham (%)',
+                  'F-measure', 'MCC', 'Kappa', 'P', 'N', 'TP', 'TN', 'FP', 'FN']
+        csv.writer(f).writerow(header)
+
+        for classifier, score in scores_list:
+            row = [classifier, score['acc'], score['sc'], score['bh'],
+                   score['f1'], score['mcc'], score['kappa'],
+                   score['p'], score['n'],
+                   score['tp'], score['tn'], score['fp'], score['fn']]
+            csv.writer(f).writerow(row)
 
 
 def tex_report(filename, video_title, scores_list):
@@ -127,27 +148,3 @@ def plot_roc(figurename, video_title, scores_list):
     plt.savefig(figurename + '_roc.png', bbox_inches='tight')
     plt.savefig(figurename + '_roc.pdf', bbox_inches='tight')
     plt.close()
-
-
-class CsvReport:
-
-    def __init__(self, filename, clf_list, metric):
-        self.filename = filename
-        self.clf_list = clf_list
-        self.metric = metric
-        with open(filename, 'w') as f:
-            csv.writer(f).writerow(['Video'] + clf_list)
-
-    def report(self, video_title, scores_list):
-        precision = 10
-
-        scores_dict = {}
-        for clf_title, sc in scores_list:
-            scores_dict[clf_title] = sc
-
-        row = [video_title]
-        for clf in self.clf_list:
-            row.append(round(scores_dict[clf][self.metric], precision))
-
-        with open(self.filename, 'a') as f:
-            csv.writer(f).writerow(row)

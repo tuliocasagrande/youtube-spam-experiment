@@ -4,7 +4,7 @@ from classification import SingleClassification
 import os
 import report
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import make_scorer, matthews_corrcoef
@@ -28,13 +28,12 @@ def run_experiment(src_folder, video_title):
     param_criterion = {'criterion': ['gini', 'entropy']}
     param_crit_nestim = {'criterion': ['gini', 'entropy'],
                          'n_estimators': range(10, 101, 10)}
-    param_neighbors = {'n_neighbors': [1, 3, 5, 7, 9]}
     mcc = make_scorer(matthews_corrcoef)
 
     scores_list = []
     best_params = ''
 
-    CONFIG = [
+    config = [
         ('MultinomialNB',
          GridSearchCV(MultinomialNB(), param_alpha, cv=10, scoring=mcc)),
         ('BernoulliNB',
@@ -53,15 +52,16 @@ def run_experiment(src_folder, video_title):
          GridSearchCV(DecisionTreeClassifier(random_state=0), param_criterion, cv=10, scoring=mcc)),
         ('RandomForest',
          GridSearchCV(RandomForestClassifier(random_state=0), param_crit_nestim, cv=10, scoring=mcc)),
-        ('k-NN',
-         GridSearchCV(KNeighborsClassifier(), param_neighbors, cv=10, scoring=mcc)),
+        ('1-NN',
+         KNeighborsClassifier(n_neighbors=1)),
+        ('3-NN',
+         KNeighborsClassifier(n_neighbors=3)),
+        ('5-NN',
+         KNeighborsClassifier(n_neighbors=5))
     ]
 
-    count = CountVectorizer()
-    tfidf = TfidfVectorizer()
-    tf = TfidfVectorizer(use_idf=False)
-    single_classification = SingleClassification(src_folder, video_title, count)
-    for classifier_title, classifier in CONFIG:
+    single_classification = SingleClassification(src_folder, video_title, TfidfVectorizer(use_idf=False))
+    for classifier_title, classifier in config:
         logger.info("Fitting " + classifier_title)
 
         y_true, y_pred = single_classification.classify(classifier)
@@ -70,11 +70,7 @@ def run_experiment(src_folder, video_title):
 
     scores_list.sort(key=lambda scores: (scores[1]['mcc'], scores[1]['f1']),
                      reverse=True)
-
-    with open(os.path.join(RESULTS_PATH, 'best_params.txt'), 'a') as f:
-        f.write('\n##############\n' + video_title + '\n\n' + best_params)
-
-    report.csv_report(RESULTS_PATH, video_title, scores_list)
+    return scores_list, best_params
 
 
 def get_best_params(clf_title, classifier):
@@ -86,25 +82,45 @@ def get_best_params(clf_title, classifier):
 
 
 if __name__ == "__main__":
-    # RESULTS_SUBFOLDER = 'tf_normalized'
-    # SRC_FOLDER = 'data_split_normalized'
-    RESULTS_SUBFOLDER = 'exp1_count'
-    SRC_FOLDER = 'data_split'
+    EXPERIMENT_FOLDER = 'exp1_tf_normalized'
+    SRC_FOLDER = 'data_split_normalized'
 
-    # RESULTS_PATH = os.path.join('results', RESULTS_SUBFOLDER)
-    RESULTS_PATH = os.path.join(RESULTS_SUBFOLDER, 'results')
-    if not os.path.exists(RESULTS_PATH):
-        os.makedirs(RESULTS_PATH)
+    results_path = os.path.join(EXPERIMENT_FOLDER, 'results')
+    figures_path = os.path.join(EXPERIMENT_FOLDER, 'figures')
 
-    file_list = ['01-9bZkp7q19f0',
-                 '04-CevxZvSJLk8',
-                 '07-KQ6zr6kCPj8',
-                 '08-uelHwf8o7_U',
-                 '09-pRpeEdMmmQ0']
+    if not os.path.exists(results_path):
+        os.makedirs(results_path)
+    if not os.path.exists(figures_path):
+        os.makedirs(figures_path)
 
-    with open(os.path.join(RESULTS_PATH, 'best_params.txt'), 'w') as f:
+    file_list = [('01-9bZkp7q19f0', 'Psy'),
+                 ('04-CevxZvSJLk8', 'KatyPerry'),
+                 ('07-KQ6zr6kCPj8', 'LMFAO'),
+                 ('08-uelHwf8o7_U', 'Eminem'),
+                 ('09-pRpeEdMmmQ0', 'Shakira')]
+
+    csv_filename = os.path.join(results_path, 'results_mcc.csv')
+    clf_list = ['MultinomialNB', 'BernoulliNB', 'GaussianNB', 'SVM Linear',
+                'SVM RBF', 'SVM Poly', 'Logistic', 'DecisionTree',
+                'RandomForest', '1-NN', '3-NN', '5-NN']
+    csv_report = report.CsvReport(csv_filename, clf_list, 'mcc')
+
+    with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'w') as f:
         f.write('Best Parameters\n')
 
-    for video_title in file_list:
+    for video_title, author in file_list:
         logger.info("TRAINING VIDEO " + video_title)
-        run_experiment(SRC_FOLDER, video_title)
+        scores_list, best_params = run_experiment(SRC_FOLDER, video_title)
+
+        with open(os.path.join(EXPERIMENT_FOLDER, 'best_params.txt'), 'a') as f:
+            f.write('\n##############\n')
+            f.write(video_title + '\n\n')
+            f.write(best_params)
+
+        tex_filename = os.path.join(results_path, video_title + '.tex')
+        figurename = os.path.join(figures_path, video_title)
+
+        report.tex_report(tex_filename, video_title, scores_list, author)
+        report.plot_bars(figurename, video_title, scores_list, 'mcc')
+        report.plot_roc(figurename, video_title, scores_list)
+        csv_report.report(video_title, scores_list)

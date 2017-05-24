@@ -1,9 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
-import numpy as np
 import os
 import random
-import unicodecsv as csv
 
 from gensim.models import Doc2Vec
 from gensim.models.doc2vec import TaggedDocument

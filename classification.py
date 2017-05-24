@@ -33,7 +33,6 @@ class SingleClassification:
 
     def classify(self, clf):
 
-        # Fitting and predicting
         try:
             clf.fit(self.bow_train, self.y_train)
             y_pred = clf.predict(self.bow_test)
